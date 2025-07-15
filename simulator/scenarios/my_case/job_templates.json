@@ -1,0 +1,14 @@
+{
+  "J1": {
+    "operations": [
+      {"op_id": "J1_O1", "machine": "M1", "op_type": "drilling"},
+      {"op_id": "J1_O2", "machine": "M2", "op_type": "milling"}
+    ]
+  },
+  "J2": {
+    "operations": [
+      {"op_id": "J2_O1", "machine": "M2", "op_type": "milling"},
+      {"op_id": "J2_O2", "machine": "M1", "op_type": "drilling"}
+    ]
+  }
+}
