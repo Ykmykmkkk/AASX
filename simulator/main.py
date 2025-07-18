@@ -1,22 +1,18 @@
-# main.py
-from builder import ModelBuilder
-from simulator import Simulator
+# simulator/main.py
 
-if __name__ == '__main__':
-    # Initialize builder
-    builder = ModelBuilder('scenarios/my_case')
-    machines, generator, transducer = builder.build_models()
+from simulator.simulator import Simulator
+from simulator.builder   import ModelBuilder
 
-    # Setup simulator
+if __name__=='__main__':
+    builder  = ModelBuilder('scenarios/my_case')
+    machines, gen, tx = builder.build()
+
     sim = Simulator()
-    sim.register_model(generator)
-    sim.register_model(transducer)
+    sim.register_model(gen)
+    sim.register_model(tx)
     for m in machines:
         sim.register_model(m)
 
-    # Start simulation
-    generator.initialize()
+    gen.initialize()
     sim.run()
-
-    # Report results
-    transducer.report()
+    tx.report()

@@ -1,42 +1,47 @@
-# builder.py
-import os
-import json
-from domain import Job, Operation
-from models import Machine, Generator, Transducer
+# simulator/builder.py
+
+import os, json
+from .domain import Job, Operation
+from .models import Machine, Generator, Transducer
+
+def load(fp): return json.load(open(fp))
 
 class ModelBuilder:
-    def __init__(self, scenario_path: str):
-        self.scenario_path = scenario_path
+    def __init__(self, subpath):
+        base = os.path.dirname(__file__)
+        self.path = os.path.join(base, subpath)
 
-    def load_json(self, filename: str):
-        with open(os.path.join(self.scenario_path, filename), 'r') as f:
-            return json.load(f)
+    def build(self):
+        # JSON 로드
+        jobs_j    = load(self.path+'/jobs.json')
+        ops_j     = load(self.path+'/operations.json')
+        dur_j     = load(self.path+'/operation_durations.json')
+        rout      = load(self.path+'/routing_result.json')
+        transfer  = load(self.path+'/machine_transfer_time.json')
+        init_m    = load(self.path+'/initial_machine_status.json')
+        releases  = load(self.path+'/job_release.json')
 
-    def build_models(self):
-        # Load scenario files
-        releases = self.load_json('job_release.json')
-        templates = self.load_json('job_templates.json')
-        durations = self.load_json('operation_durations.json')
-        machine_names = self.load_json('machines.json')
+        # operation map, routing map
+        op_map    = {o['operation_id']: o for o in ops_j}
+        route_map = {r['operation_id']: r['assigned_machine'] for r in rout}
 
-        # Build jobs
+        # Job & Part
         jobs = {}
-        for job_id, tmpl in templates.items():
-            ops = [
-                Operation(op['op_id'], op['machine'],
-                          durations[op['op_type']][op['machine']])
-                for op in tmpl['operations']
-            ]
-            # Assign machine for each operation
-            for op in ops:
-                op.assigned_machine = op.candidate_machine
-            jobs[job_id] = Job(job_id, ops)
+        for j in jobs_j:
+            ops = []
+            for oid in j['operations']:
+                om  = op_map[oid]
+                m   = route_map[oid]
+                spec= dur_j[om['type']][m]
+                ops.append(Operation(oid, m, spec))
+            jobs[j['job_id']] = Job(j['job_id'], j['part_id'], ops)
 
-        # Build machines
-        machines = [Machine(name) for name in machine_names]
+        # Machines
+        machines = []
+        for m, info in init_m.items():
+            machines.append(Machine(m, transfer[m], info))
 
-        # Generator & Transducer
-        generator = Generator(releases, jobs)
-        transducer = Transducer()
+        gen = Generator(releases, jobs)
+        tx  = Transducer()
 
-        return machines, generator, transducer
+        return machines, gen, tx

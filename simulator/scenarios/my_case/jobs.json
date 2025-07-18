@@ -1,0 +1,12 @@
+[
+  {
+    "job_id": "J1",
+    "part_id": "P1",
+    "operations": ["O11", "O12", "O13"]
+  },
+  {
+    "job_id": "J2",
+    "part_id": "P2",
+    "operations": ["O21", "O22"]
+  }
+]
