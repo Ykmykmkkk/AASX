@@ -14,12 +14,14 @@ class Event:
     def __lt__(self, other):
         return self.time < other.time
 
-    def set_src(self, name): self.src_model = name
-    def set_time(self, t): self.time = t
+    def set_src(self, name):
+        self.src_model = name
+
+    def set_time(self, t):
+        self.time = t
 
     def __repr__(self):
-        return (f"Event(time={self.time:.2f}, type={self.event_type}, "
-                f"from={self.src_model}, to={self.dest_model}, payload={self.payload})")
+        return f"Event(time={self.time:.2f}, type={self.event_type}, from={self.src_model}, to={self.dest_model}, payload={self.payload})"
 
 class EoModel:
     push_event = None

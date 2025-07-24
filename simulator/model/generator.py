@@ -5,8 +5,7 @@ from simulator.domain.domain import Part
 class Generator(EoModel):
     def __init__(self, releases, jobs):
         super().__init__('generator')
-        self.releases = releases
-        self.jobs = jobs
+        self.releases, self.jobs = releases, jobs
 
     def initialize(self):
         for r in self.releases:

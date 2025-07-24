@@ -8,6 +8,7 @@
     "M3": { "distribution": "normal", "mean": 4.5, "std": 0.8 }
   },
   "testing": {
-    "M1": { "distribution": "exponential", "rate": 0.25 }
+    "M1": { "distribution": "exponential", "rate": 0.25 },
+    "M3": { "distribution": "exponential", "rate": 0.30 }
   }
 }
