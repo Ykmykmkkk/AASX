@@ -1,0 +1,14 @@
+{
+  "drilling": {
+    "M1": { "distribution": "normal", "mean": 3.0, "std": 0.5 },
+    "M2": { "distribution": "uniform", "low": 2.5, "high": 3.5 }
+  },
+  "welding": {
+    "M2": { "distribution": "normal", "mean": 5.0, "std": 1.0 },
+    "M3": { "distribution": "normal", "mean": 4.5, "std": 0.8 }
+  },
+  "testing": {
+    "M1": { "distribution": "exponential", "rate": 0.25 },
+    "M3": { "distribution": "exponential", "rate": 0.30 }
+  }
+}
