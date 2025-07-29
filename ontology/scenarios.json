@@ -1,0 +1,74 @@
+{
+  "scenarios": [
+    {
+      "id": "Scenario-001",
+      "name": "생산 시나리오 1",
+      "startTime": "2025-07-08T00:00:00",
+      "status": "Planned",
+      "totalJobs": 12
+    },
+    {
+      "id": "Scenario-002",
+      "name": "생산 시나리오 2",
+      "startTime": "2025-07-09T00:00:00",
+      "status": "InProgress",
+      "totalJobs": 16
+    },
+    {
+      "id": "Scenario-003",
+      "name": "생산 시나리오 3",
+      "startTime": "2025-07-10T00:00:00",
+      "status": "Completed",
+      "totalJobs": 15
+    },
+    {
+      "id": "Scenario-004",
+      "name": "생산 시나리오 4",
+      "startTime": "2025-07-11T00:00:00",
+      "status": "Planned",
+      "totalJobs": 6
+    },
+    {
+      "id": "Scenario-005",
+      "name": "생산 시나리오 5",
+      "startTime": "2025-07-12T00:00:00",
+      "status": "InProgress",
+      "totalJobs": 18
+    },
+    {
+      "id": "Scenario-006",
+      "name": "생산 시나리오 6",
+      "startTime": "2025-07-13T00:00:00",
+      "status": "Planned",
+      "totalJobs": 15
+    },
+    {
+      "id": "Scenario-007",
+      "name": "생산 시나리오 7",
+      "startTime": "2025-07-14T00:00:00",
+      "status": "InProgress",
+      "totalJobs": 15
+    },
+    {
+      "id": "Scenario-008",
+      "name": "생산 시나리오 8",
+      "startTime": "2025-07-15T00:00:00",
+      "status": "Planned",
+      "totalJobs": 16
+    },
+    {
+      "id": "Scenario-009",
+      "name": "생산 시나리오 9",
+      "startTime": "2025-07-16T00:00:00",
+      "status": "InProgress",
+      "totalJobs": 17
+    },
+    {
+      "id": "Scenario-010",
+      "name": "생산 시나리오 10",
+      "startTime": "2025-07-17T00:00:00",
+      "status": "InProgress",
+      "totalJobs": 8
+    }
+  ]
+}
