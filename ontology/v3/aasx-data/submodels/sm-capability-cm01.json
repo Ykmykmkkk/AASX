@@ -1,0 +1,203 @@
+{
+  "modelType": "Submodel",
+  "id": "sm-capability-cm01",
+  "idShort": "ProcessCapability",
+  "description": [
+    {
+      "language": "en",
+      "text": "Process capabilities and supported operations for Cooling Machine 01"
+    },
+    {
+      "language": "ko",
+      "text": "냉각 기계 01 공정 능력 및 지원 작업"
+    }
+  ],
+  "administration": {
+    "version": "1.0",
+    "revision": "0"
+  },
+  "kind": "Instance",
+  "semanticId": {
+    "type": "GlobalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "https://admin-shell.io/idta/ProcessCapability/1/0"
+      }
+    ]
+  },
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "SupportedOperations",
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "http://example.org/production-domain#hasCapability"
+          }
+        ]
+      },
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "Operation1",
+          "value": "Cooling",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Operation2",
+          "value": "TemperatureControl",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Operation3",
+          "value": "RapidCooling",
+          "valueType": "xs:string"
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "OperatingParameters",
+      "value": [
+        {
+          "modelType": "Range",
+          "idShort": "TemperatureRange",
+          "valueType": "xs:float",
+          "min": "-20",
+          "max": "5",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "°C",
+              "valueType": "xs:string"
+            }
+          ]
+        },
+        {
+          "modelType": "Range",
+          "idShort": "CoolingRate",
+          "valueType": "xs:float",
+          "min": "0.5",
+          "max": "5.0",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "°C/min",
+              "valueType": "xs:string"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "MaxBatchSize",
+          "value": "500",
+          "valueType": "xs:integer",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "kg",
+              "valueType": "xs:string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "ProcessingTime",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "StandardCoolingTime",
+          "value": "30",
+          "valueType": "xs:integer",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "min",
+              "valueType": "xs:string"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "RapidCoolingTime",
+          "value": "15",
+          "valueType": "xs:integer",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "min",
+              "valueType": "xs:string"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "SetupTime",
+          "value": "10",
+          "valueType": "xs:integer",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "min",
+              "valueType": "xs:string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "TechnicalSpecifications",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "Efficiency",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://example.org/production-domain#hasEfficiency"
+              }
+            ]
+          },
+          "value": "0.89",
+          "valueType": "xs:float"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "PowerConsumption",
+          "value": "45",
+          "valueType": "xs:float",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "kW",
+              "valueType": "xs:string"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "CoolingCapacity",
+          "value": "150",
+          "valueType": "xs:float",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "kW",
+              "valueType": "xs:string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

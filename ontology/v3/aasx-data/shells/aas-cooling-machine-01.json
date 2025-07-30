@@ -1,0 +1,102 @@
+{
+  "modelType": "AssetAdministrationShell",
+  "id": "aas-cooling-machine-01",
+  "idShort": "CoolingMachine01",
+  "description": [
+    {
+      "language": "en",
+      "text": "Asset Administration Shell for Cooling Machine 01"
+    },
+    {
+      "language": "ko",
+      "text": "냉각 기계 01 자산 관리 쉘"
+    }
+  ],
+  "administration": {
+    "version": "1.0",
+    "revision": "0"
+  },
+  "derivedFrom": {
+    "type": "ModelReference",
+    "keys": [
+      {
+        "type": "AssetAdministrationShell",
+        "value": "aas-cooling-machine-template"
+      }
+    ]
+  },
+  "assetInformation": {
+    "assetKind": "Instance",
+    "globalAssetId": "http://example.org/assets/cooling-machine-01",
+    "specificAssetIds": [
+      {
+        "name": "OntologyURI",
+        "value": "http://example.org/production-domain#CoolingMachine-01",
+        "externalSubjectId": {
+          "type": "GlobalReference",
+          "keys": [
+            {
+              "type": "GlobalReference",
+              "value": "http://example.org/production-domain#"
+            }
+          ]
+        }
+      },
+      {
+        "name": "SerialNumber",
+        "value": "CM01-2024-001"
+      },
+      {
+        "name": "Location",
+        "value": "Building-B-Floor-3"
+      }
+    ]
+  },
+  "submodels": [
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "sm-nameplate-cm01"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "sm-operational-cm01"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "sm-capability-cm01"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "sm-history-cm01"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "sm-maintenance-cm01"
+        }
+      ]
+    }
+  ]
+}

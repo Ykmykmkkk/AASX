@@ -1,0 +1,179 @@
+{
+  "modelType": "Submodel",
+  "id": "sm-operational-cm01",
+  "idShort": "OperationalData",
+  "description": [
+    {
+      "language": "en",
+      "text": "Operational data and real-time sensor readings for Cooling Machine 01"
+    },
+    {
+      "language": "ko",
+      "text": "냉각 기계 01 운영 데이터 및 실시간 센서 측정값"
+    }
+  ],
+  "administration": {
+    "version": "1.0",
+    "revision": "0"
+  },
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "CurrentStatus",
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "http://example.org/production-domain#hasStatus"
+          }
+        ]
+      },
+      "value": "Error",
+      "valueType": "xs:string",
+      "qualifiers": [
+        {
+          "type": "LastUpdate",
+          "value": "2025-07-17T10:00:00Z",
+          "valueType": "xs:dateTime"
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "SensorReadings",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "Temperature",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://example.org/production-domain#temperature"
+              }
+            ]
+          },
+          "value": "25.3",
+          "valueType": "xs:float",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "°C",
+              "valueType": "xs:string"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Pressure",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://example.org/production-domain#pressure"
+              }
+            ]
+          },
+          "value": "105.2",
+          "valueType": "xs:float",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "kPa",
+              "valueType": "xs:string"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Vibration",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://example.org/production-domain#vibration"
+              }
+            ]
+          },
+          "value": "4.8",
+          "valueType": "xs:float",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "m/s²",
+              "valueType": "xs:string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "PerformanceMetrics",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "Utilization",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://example.org/production-domain#utilization"
+              }
+            ]
+          },
+          "value": "0.0",
+          "valueType": "xs:float"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "OEE",
+          "value": "0.0",
+          "valueType": "xs:float"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Availability",
+          "value": "0.0",
+          "valueType": "xs:float"
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "ErrorStatus",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "ErrorCode",
+          "value": "TEMP_HIGH",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ErrorDescription",
+          "value": "Temperature exceeded threshold during cooling",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ErrorTime",
+          "value": "2025-07-17T08:45:00Z",
+          "valueType": "xs:dateTime"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Severity",
+          "value": "High",
+          "valueType": "xs:string"
+        }
+      ]
+    }
+  ]
+}

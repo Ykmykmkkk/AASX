@@ -1,0 +1,204 @@
+{
+  "modelType": "Submodel",
+  "id": "sm-maintenance-cm01",
+  "idShort": "MaintenanceInfo",
+  "description": [
+    {
+      "language": "en",
+      "text": "Maintenance information and schedules for Cooling Machine 01"
+    },
+    {
+      "language": "ko",
+      "text": "냉각 기계 01 유지보수 정보 및 일정"
+    }
+  ],
+  "administration": {
+    "version": "1.0",
+    "revision": "0"
+  },
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "LastMaintenanceDate",
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "http://example.org/production-domain#lastMaintenance"
+          }
+        ]
+      },
+      "value": "2025-07-01T08:00:00Z",
+      "valueType": "xs:dateTime"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "NextScheduledMaintenance",
+      "value": "2025-08-01T08:00:00Z",
+      "valueType": "xs:dateTime"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "MaintenanceInterval",
+      "value": "30",
+      "valueType": "xs:integer",
+      "qualifiers": [
+        {
+          "type": "Unit",
+          "value": "days",
+          "valueType": "xs:string"
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "MaintenanceHistory",
+      "value": [
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Maintenance-2025-07-01",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "Date",
+              "value": "2025-07-01T08:00:00Z",
+              "valueType": "xs:dateTime"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Type",
+              "value": "Scheduled",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Description",
+              "value": "Regular monthly maintenance",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Technician",
+              "value": "Tech-042",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Duration",
+              "value": "120",
+              "valueType": "xs:integer",
+              "qualifiers": [
+                {
+                  "type": "Unit",
+                  "value": "min",
+                  "valueType": "xs:string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Maintenance-2025-06-01",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "Date",
+              "value": "2025-06-01T08:00:00Z",
+              "valueType": "xs:dateTime"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Type",
+              "value": "Scheduled",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Description",
+              "value": "Regular monthly maintenance",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Technician",
+              "value": "Tech-015",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Duration",
+              "value": "90",
+              "valueType": "xs:integer",
+              "qualifiers": [
+                {
+                  "type": "Unit",
+                  "value": "min",
+                  "valueType": "xs:string"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "ComponentStatus",
+      "value": [
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "CoolingUnit",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "Status",
+              "value": "Warning",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "RemainingLifetime",
+              "value": "4500",
+              "valueType": "xs:integer",
+              "qualifiers": [
+                {
+                  "type": "Unit",
+                  "value": "hours",
+                  "valueType": "xs:string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Compressor",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "Status",
+              "value": "Good",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "RemainingLifetime",
+              "value": "8200",
+              "valueType": "xs:integer",
+              "qualifiers": [
+                {
+                  "type": "Unit",
+                  "value": "hours",
+                  "valueType": "xs:string"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

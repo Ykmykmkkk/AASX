@@ -1,0 +1,137 @@
+{
+  "description": "Time series sensor data for 2025-07-17",
+  "timeRange": {
+    "start": "2025-07-17T00:00:00Z",
+    "end": "2025-07-17T23:59:59Z"
+  },
+  "machines": {
+    "aas-cooling-machine-01": {
+      "ontologyUri": "http://example.org/production-domain#CoolingMachine-01",
+      "dataPoints": [
+        {
+          "timestamp": "2025-07-17T08:00:00Z",
+          "temperature": 22.5,
+          "pressure": 101.3,
+          "vibration": 2.1,
+          "status": "Active"
+        },
+        {
+          "timestamp": "2025-07-17T08:30:00Z",
+          "temperature": 23.8,
+          "pressure": 102.5,
+          "vibration": 2.8,
+          "status": "Active"
+        },
+        {
+          "timestamp": "2025-07-17T08:45:00Z",
+          "temperature": 25.3,
+          "pressure": 105.2,
+          "vibration": 4.8,
+          "status": "Error",
+          "errorCode": "TEMP_HIGH"
+        },
+        {
+          "timestamp": "2025-07-17T09:00:00Z",
+          "temperature": 25.3,
+          "pressure": 105.2,
+          "vibration": 4.8,
+          "status": "Error",
+          "errorCode": "TEMP_HIGH"
+        },
+        {
+          "timestamp": "2025-07-17T10:00:00Z",
+          "temperature": 25.3,
+          "pressure": 105.2,
+          "vibration": 4.8,
+          "status": "Error",
+          "errorCode": "TEMP_HIGH"
+        }
+      ]
+    },
+    "aas-cooling-machine-02": {
+      "ontologyUri": "http://example.org/production-domain#CoolingMachine-02",
+      "dataPoints": [
+        {
+          "timestamp": "2025-07-17T09:00:00Z",
+          "temperature": 21.5,
+          "pressure": 100.8,
+          "vibration": 1.9,
+          "status": "Active"
+        },
+        {
+          "timestamp": "2025-07-17T09:30:00Z",
+          "temperature": 21.8,
+          "pressure": 101.0,
+          "vibration": 2.0,
+          "status": "Active"
+        },
+        {
+          "timestamp": "2025-07-17T10:00:00Z",
+          "temperature": 22.1,
+          "pressure": 101.3,
+          "vibration": 2.1,
+          "status": "Active"
+        },
+        {
+          "timestamp": "2025-07-17T10:05:00Z",
+          "temperature": 23.5,
+          "pressure": 108.2,
+          "vibration": 3.5,
+          "status": "Error",
+          "errorCode": "PRESSURE_HIGH"
+        }
+      ]
+    },
+    "aas-heating-machine-02": {
+      "ontologyUri": "http://example.org/production-domain#HeatingMachine-02",
+      "dataPoints": [
+        {
+          "timestamp": "2025-07-17T16:30:00Z",
+          "temperature": 85.2,
+          "pressure": 112.5,
+          "vibration": 2.5,
+          "status": "Active",
+          "currentJob": "Job-2008",
+          "progress": 0.0
+        },
+        {
+          "timestamp": "2025-07-17T16:45:00Z",
+          "temperature": 87.5,
+          "pressure": 114.2,
+          "vibration": 2.7,
+          "status": "Active",
+          "currentJob": "Job-2008",
+          "progress": 0.35
+        },
+        {
+          "timestamp": "2025-07-17T17:00:00Z",
+          "temperature": 88.5,
+          "pressure": 115.2,
+          "vibration": 2.8,
+          "status": "Active",
+          "currentJob": "Job-2008",
+          "progress": 0.65
+        }
+      ]
+    }
+  },
+  "aggregatedMetrics": {
+    "2025-07-17": {
+      "avgTemperature": {
+        "aas-cooling-machine-01": 24.1,
+        "aas-cooling-machine-02": 22.0,
+        "aas-heating-machine-02": 87.1
+      },
+      "avgUtilization": {
+        "aas-cooling-machine-01": 0.45,
+        "aas-cooling-machine-02": 0.78,
+        "aas-heating-machine-02": 0.82
+      },
+      "errorCount": {
+        "aas-cooling-machine-01": 1,
+        "aas-cooling-machine-02": 1,
+        "aas-heating-machine-02": 0
+      }
+    }
+  }
+}

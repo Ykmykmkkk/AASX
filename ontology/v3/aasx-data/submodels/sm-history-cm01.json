@@ -1,0 +1,146 @@
+{
+  "modelType": "Submodel",
+  "id": "sm-history-cm01",
+  "idShort": "ProductionHistory",
+  "description": [
+    {
+      "language": "en",
+      "text": "Production history and job execution records for Cooling Machine 01"
+    },
+    {
+      "language": "ko",
+      "text": "냉각 기계 01 생산 이력 및 작업 실행 기록"
+    }
+  ],
+  "administration": {
+    "version": "1.0",
+    "revision": "0"
+  },
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "RecentJobs",
+      "value": [
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Job-2001",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "JobId",
+              "value": "Job-2001",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "ProductId",
+              "value": "Product-A1",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Status",
+              "value": "Failed",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "StartTime",
+              "value": "2025-07-17T08:00:00Z",
+              "valueType": "xs:dateTime"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "EndTime",
+              "value": "2025-07-17T08:45:00Z",
+              "valueType": "xs:dateTime"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Duration",
+              "value": "45",
+              "valueType": "xs:integer",
+              "qualifiers": [
+                {
+                  "type": "Unit",
+                  "value": "min",
+                  "valueType": "xs:string"
+                }
+              ]
+            },
+            {
+              "modelType": "Property",
+              "idShort": "ErrorCode",
+              "value": "TEMP_HIGH",
+              "valueType": "xs:string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "Statistics",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "TotalJobsProcessed",
+          "value": "1245",
+          "valueType": "xs:integer"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "SuccessfulJobs",
+          "value": "1180",
+          "valueType": "xs:integer"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "FailedJobs",
+          "value": "65",
+          "valueType": "xs:integer"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "SuccessRate",
+          "value": "0.948",
+          "valueType": "xs:float"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "AverageProcessingTime",
+          "value": "32.5",
+          "valueType": "xs:float",
+          "qualifiers": [
+            {
+              "type": "Unit",
+              "value": "min",
+              "valueType": "xs:string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "modelType": "ReferenceElement",
+      "idShort": "DetailedHistoryEndpoint",
+      "value": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "http://timeseries-db/api/history/cooling-machine-01"
+          }
+        ]
+      },
+      "qualifiers": [
+        {
+          "type": "Description",
+          "value": "External endpoint for accessing detailed historical time series data",
+          "valueType": "xs:string"
+        }
+      ]
+    }
+  ]
+}

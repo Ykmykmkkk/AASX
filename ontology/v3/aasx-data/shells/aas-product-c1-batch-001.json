@@ -1,0 +1,66 @@
+{
+  "modelType": "AssetAdministrationShell",
+  "id": "aas-product-c1-batch-001",
+  "idShort": "ProductC1Batch001",
+  "description": [
+    {
+      "language": "en",
+      "text": "Asset Administration Shell for Product C1 Batch 001"
+    },
+    {
+      "language": "ko",
+      "text": "제품 C1 배치 001 자산 관리 쉘"
+    }
+  ],
+  "administration": {
+    "version": "1.0",
+    "revision": "0"
+  },
+  "assetInformation": {
+    "assetKind": "Instance",
+    "globalAssetId": "http://example.org/products/product-c1-batch-001",
+    "specificAssetIds": [
+      {
+        "name": "ProductType",
+        "value": "Product-C1"
+      },
+      {
+        "name": "BatchNumber",
+        "value": "BATCH-001-20250717"
+      },
+      {
+        "name": "OntologyURI",
+        "value": "http://example.org/production-domain#Product-C1",
+        "externalSubjectId": {
+          "type": "GlobalReference",
+          "keys": [
+            {
+              "type": "GlobalReference",
+              "value": "http://example.org/production-domain#"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "submodels": [
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "sm-tracking-c1-001"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "sm-production-c1-001"
+        }
+      ]
+    }
+  ]
+}

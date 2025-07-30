@@ -1,0 +1,149 @@
+{
+  "modelType": "Submodel",
+  "id": "sm-tracking-c1-001",
+  "idShort": "ProductTracking",
+  "description": [
+    {
+      "language": "en",
+      "text": "Real-time tracking information for Product C1 Batch 001"
+    },
+    {
+      "language": "ko",
+      "text": "제품 C1 배치 001 실시간 추적 정보"
+    }
+  ],
+  "administration": {
+    "version": "1.0",
+    "revision": "0"
+  },
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "CurrentLocation",
+      "value": "HeatingMachine-02",
+      "valueType": "xs:string",
+      "qualifiers": [
+        {
+          "type": "LastUpdate",
+          "value": "2025-07-17T17:00:00Z",
+          "valueType": "xs:dateTime"
+        }
+      ]
+    },
+    {
+      "modelType": "Property",
+      "idShort": "CurrentOperation",
+      "value": "Heating",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "OperationProgress",
+      "value": "0.65",
+      "valueType": "xs:float"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "JobId",
+      "value": "Job-2008",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "ProcessingHistory",
+      "value": [
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Step1",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "Operation",
+              "value": "Cutting",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Machine",
+              "value": "CuttingMachine-01",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "StartTime",
+              "value": "2025-07-17T16:30:00Z",
+              "valueType": "xs:dateTime"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "EndTime",
+              "value": "2025-07-17T16:45:00Z",
+              "valueType": "xs:dateTime"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Status",
+              "value": "Completed",
+              "valueType": "xs:string"
+            }
+          ]
+        },
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Step2",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "Operation",
+              "value": "Heating",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Machine",
+              "value": "HeatingMachine-02",
+              "valueType": "xs:string"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "StartTime",
+              "value": "2025-07-17T16:45:00Z",
+              "valueType": "xs:dateTime"
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Status",
+              "value": "Processing",
+              "valueType": "xs:string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "NextSteps",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "Step3Operation",
+          "value": "Assembly",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Step3Machine",
+          "value": "AssemblyMachine-03",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Step3Status",
+          "value": "Pending",
+          "valueType": "xs:string"
+        }
+      ]
+    }
+  ]
+}
