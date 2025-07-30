@@ -1,5 +1,3 @@
-# simulator/model/machine.py
-
 from simulator.engine.simulator import EoModel, Event
 from simulator.dispatch.dispatch import FIFO
 from simulator.result.recorder import Recorder
@@ -19,9 +17,6 @@ class Machine(EoModel):
         et = evt.event_type
         if et in ('material_arrival','part_arrival'):
             part = evt.payload['part']
-            op   = part.job.current_op()
-            # 큐에 들어간 시점도 기록
-            Recorder.log_queue(part, self.name, EoModel.get_time(), op.id, len(self.queue)+1)
             self._enqueue(part)
 
         elif et == 'machine_idle_check':
@@ -32,7 +27,12 @@ class Machine(EoModel):
             self._finish(op_id)
 
     def _enqueue(self, part):
+        # 파트 큐에 추가하고, 대기 중인 operation 목록 로깅
         self.queue.append(part)
+        queue_ops = [p.job.current_op().id for p in self.queue]
+        op_id = part.job.current_op().id
+        Recorder.log_queue(part, self.name, EoModel.get_time(), op_id, len(self.queue), queue_ops)
+
         ev = Event('machine_idle_check', dest_model=self.name)
         self.schedule(ev, 0)
 
@@ -48,7 +48,6 @@ class Machine(EoModel):
         self.status  = 'busy'
         self.running = part
         part.status  = 'processing'
-        # 시작 시점 기록 (queue_length: 큐에 남은 대기 개수)
         Recorder.log_start(part, self.name, EoModel.get_time(), op.id, len(self.queue))
 
         ev = Event('end_operation', {'part': part, 'operation_id': op.id}, dest_model=self.name)
@@ -56,35 +55,33 @@ class Machine(EoModel):
 
     def _finish(self, op_id=None):
         part = self.running
-        # 종료 시점 기록
         Recorder.log_end(part, self.name, EoModel.get_time(), op_id)
 
         part.job.advance()
         if part.job.done():
-            # 완전 종료 기록
             Recorder.log_done(part, EoModel.get_time())
-            # job_completed 이벤트로 Transducer 호출
             done_ev = Event('job_completed', {'part': part}, dest_model='transducer')
             self.schedule(done_ev, 0)
         else:
-            # 다음 공정으로 이동
             nxt  = part.job.current_op().select_machine()
             spec = self.transfer.get(nxt, {})
-            # 이동 지연 샘플링
             dist = spec.get('distribution')
             if dist=='normal':
                 delay = max(0, random.gauss(spec['mean'], spec['std']))
             elif dist=='uniform':
-                delay = random.uniform(spec['low'], spec['high'])
+                delay = random.uniform(spec.get('low',0), spec.get('high',0))
             elif dist=='exponential':
                 delay = random.expovariate(spec['rate'])
             else:
                 delay = 0
+
+            # 머신 간 전송 정보 기록
+            Recorder.log_transfer(part, self.name, nxt, EoModel.get_time(), delay)
+
             ev = Event('part_arrival', {'part': part}, dest_model=nxt)
             self.schedule(ev, delay)
 
         self.running = None
         self.status  = 'idle'
-        # 상태 변화 후에도 큐 체크
         ev = Event('machine_idle_check', dest_model=self.name)
         self.schedule(ev, 0)
