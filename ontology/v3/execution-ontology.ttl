@@ -1,0 +1,429 @@
+@prefix exec: <http://example.org/execution-ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== Execution Ontology: HOW to execute =====
+
+exec:ExecutionOntology rdf:type owl:Ontology ;
+    rdfs:label "Execution Ontology" ;
+    rdfs:comment "Defines how to process DSL inputs and execute actions" .
+
+# ===== Core Classes =====
+
+exec:Goal rdf:type owl:Class ;
+    rdfs:comment "A goal to be achieved from DSL input" .
+
+exec:Action rdf:type owl:Class ;
+    rdfs:comment "An executable action" .
+
+exec:ActionType rdf:type owl:Class ;
+    rdfs:comment "Type of action execution" .
+
+exec:ResultType rdf:type owl:Class ;
+    rdfs:comment "Type of result produced" .
+
+exec:ExecutionPlan rdf:type owl:Class ;
+    rdfs:comment "A plan containing ordered execution steps" .
+
+exec:ExecutionStep rdf:type owl:Class ;
+    rdfs:comment "A single step in execution plan" .
+
+# ===== Goal Subclasses =====
+
+exec:QueryGoal rdfs:subClassOf exec:Goal ;
+    rdfs:comment "Goals that retrieve information" .
+
+exec:ComputeGoal rdfs:subClassOf exec:Goal ;
+    rdfs:comment "Goals that perform computation" .
+
+exec:PredictionGoal rdfs:subClassOf exec:Goal ;
+    rdfs:comment "Goals that predict future states" .
+
+# ===== Action Subclasses =====
+
+exec:QueryBuilder rdfs:subClassOf exec:Action ;
+    rdfs:comment "Builds queries from templates" .
+
+exec:SPARQLExecutor rdfs:subClassOf exec:Action ;
+    rdfs:comment "Executes SPARQL queries" .
+
+exec:DataEnricher rdfs:subClassOf exec:Action ;
+    rdfs:comment "Enriches data with additional information" .
+
+exec:DockerExecutor rdfs:subClassOf exec:Action ;
+    rdfs:comment "Executes Docker containers" .
+
+exec:AASConnector rdfs:subClassOf exec:Action ;
+    rdfs:comment "Connects to AAS endpoints" .
+
+# ===== Properties =====
+
+exec:requiresAction rdf:type owl:ObjectProperty ;
+    rdfs:domain exec:Goal ;
+    rdfs:range exec:Action ;
+    rdfs:comment "Actions required to achieve the goal" .
+
+exec:hasResultType rdf:type owl:ObjectProperty ;
+    rdfs:domain exec:Goal ;
+    rdfs:range exec:ResultType ;
+    rdfs:comment "Expected result type of the goal" .
+
+exec:actionType rdf:type owl:ObjectProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range exec:ActionType ;
+    rdfs:comment "Type of the action" .
+
+exec:executionOrder rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Order of execution for the action" .
+
+exec:hasTemplate rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:QueryBuilder ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Query template with placeholders" .
+
+exec:requiresInput rdf:type owl:ObjectProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:comment "Input required from previous actions" .
+
+exec:producesOutput rdf:type owl:ObjectProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:comment "Output produced by the action" .
+
+# ===== Action Types =====
+
+exec:SPARQLQuery rdf:type exec:ActionType ;
+    rdfs:label "SPARQL Query" .
+
+exec:DockerRun rdf:type exec:ActionType ;
+    rdfs:label "Docker Run" .
+
+exec:AASGet rdf:type exec:ActionType ;
+    rdfs:label "AAS GET Request" .
+
+exec:DataTransform rdf:type exec:ActionType ;
+    rdfs:label "Data Transformation" .
+
+# ===== Result Types =====
+
+exec:JobReport rdf:type exec:ResultType ;
+    rdfs:label "Job Report" .
+
+exec:AnomalyReport rdf:type exec:ResultType ;
+    rdfs:label "Anomaly Report" .
+
+exec:CompletionTimePrediction rdf:type exec:ResultType ;
+    rdfs:label "Completion Time Prediction" .
+
+exec:ProductLocationReport rdf:type exec:ResultType ;
+    rdfs:label "Product Location Report" .
+
+exec:hasOutputName rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Output variable name for the action" .
+
+exec:hasEndpointTemplate rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Endpoint URL template with placeholders" .
+
+exec:hasQueryTemplate rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "SPARQL query template" .
+
+exec:hasDockerImage rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Docker image to run" .
+
+exec:hasInputMapping rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Input parameter mapping as JSON" .
+
+exec:hasEnrichmentType rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Type of data enrichment" .
+
+# ===== Action 인스턴스에 실행 정보 추가 =====
+
+# Actions for Goal 1
+exec:BuildJobQuery rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 ;
+    exec:hasOutputName "jobQuery" ;
+    exec:hasQueryTemplate """
+        PREFIX prod: <http://example.org/production-domain#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        
+        SELECT ?job ?machine ?startTime ?status
+        WHERE {
+            ?job rdf:type prod:Job .
+            ?job prod:hasStartTime ?startTime .
+            ?job prod:hasStatus ?status .
+            %%FILTERS%%
+            OPTIONAL { ?job prod:executedOn ?machine }
+        }
+        ORDER BY DESC(?startTime)
+        LIMIT 100
+    """ .
+
+exec:ExecuteJobQuery rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 2 ;
+    exec:requiresInput exec:BuildJobQuery ;
+    exec:hasOutputName "queryResults" ;
+    exec:hasEndpointTemplate "http://localhost:3030/production/query" ;
+    exec:hasInputMapping "${jobQuery}" .
+
+exec:EnrichJobResults rdf:type exec:DataEnricher ;
+    exec:actionType exec:DataTransform ;
+    exec:executionOrder 3 ;
+    exec:requiresInput exec:ExecuteJobQuery ;
+    exec:hasOutputName "enrichedResults" ;
+    exec:hasInputMapping "${queryResults}" ;
+    exec:hasEnrichmentType "fetchMachineDetails,parseErrorLogs" .
+
+# Actions for Goal 2
+exec:BuildProductTraceQuery rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 ;
+    exec:hasOutputName "productTraceQuery" ;
+    exec:hasQueryTemplate """
+        PREFIX prod: <http://example.org/production-domain#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        
+        SELECT ?job ?machine ?startTime ?status
+        WHERE {
+            ?job rdf:type prod:Job .
+            ?job prod:forProduct prod:%%PRODUCT_ID%% .
+            ?job prod:executedOn ?machine .
+            ?job prod:hasStartTime ?startTime .
+            ?job prod:hasStatus ?status .
+            %%DATE_FILTER%%
+        }
+        ORDER BY ?startTime
+    """ .
+
+exec:ExecuteProductTrace rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 2 ;
+    exec:hasOutputName "productTraceResults" ;
+    exec:hasEndpointTemplate "http://localhost:3030/production/query" ;
+    exec:hasInputMapping "${productTraceQuery}" .
+
+exec:FetchSensorData rdf:type exec:AASConnector ;
+    exec:actionType exec:AASGet ;
+    exec:executionOrder 3 ;
+    exec:hasOutputName "sensorData" ;
+    exec:hasEndpointTemplate "http://aas-server/api/assets/{target_machine}/sensors" .
+
+exec:RunAnomalyDetection rdf:type exec:DockerExecutor ;
+    exec:actionType exec:DockerRun ;
+    exec:executionOrder 4 ;
+    exec:invokesModel "anomaly-detector:v2" ;
+    exec:hasOutputName "anomalyReport" ;
+    exec:hasInputMapping """{"sensorData": "${sensorData}"}""" ;
+    exec:hasDockerImage "anomaly-detector:v2" .
+
+# Actions for Goal 3
+exec:BuildJobTemplateQuery rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 ;
+    exec:hasOutputName "jobTemplateQuery" ;
+    exec:hasQueryTemplate """
+        PREFIX prod: <http://example.org/production-domain#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        
+        SELECT ?operation ?machine ?duration
+        WHERE {
+            prod:%%PRODUCT_ID%% prod:hasJobTemplate ?template .
+            ?template prod:hasOperation ?operation .
+            ?operation prod:canBeExecutedOn ?machine ;
+                      prod:hasDuration ?duration .
+        }
+    """ .
+
+exec:FetchJobTemplate rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 2 ;
+    exec:hasOutputName "jobTemplate" ;
+    exec:hasEndpointTemplate "http://localhost:3030/production/query" ;
+    exec:hasInputMapping "${jobTemplateQuery}" .
+
+exec:FetchMachineSchedule rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 3 ;
+    exec:hasOutputName "machineSchedule" ;
+    exec:hasQueryTemplate """
+        PREFIX prod: <http://example.org/production-domain#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        
+        SELECT ?machine ?status ?capability
+        WHERE {
+            ?machine rdf:type prod:Machine .
+            ?machine prod:hasStatus ?status .
+            OPTIONAL { ?machine prod:hasCapability ?capability }
+        }
+    """ .
+
+exec:RunSimulation rdf:type exec:DockerExecutor ;
+    exec:actionType exec:DockerRun ;
+    exec:executionOrder 4 ;
+    exec:invokesModel "fjsp-simulator:v1" ;
+    exec:hasOutputName "simulationResult" ;
+    exec:hasDockerImage "fjsp-simulator:v1" ;
+    exec:hasInputMapping """{"product": "%%PRODUCT_ID%%", "quantity": %%QUANTITY%%, "jobTemplate": "${jobTemplate}", "machineSchedule": "${machineSchedule}"}""" .
+
+# Actions for Goal 4  
+exec:BuildProductLocationQuery rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 ;
+    exec:hasOutputName "locationQuery" ;
+    exec:hasQueryTemplate """
+        PREFIX prod: <http://example.org/production-domain#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        
+        SELECT ?job ?status ?machine ?opIndex
+        WHERE {
+            ?job rdf:type prod:Job .
+            ?job prod:forProduct prod:%%PRODUCT_ID%% .
+            ?job prod:hasStatus "Processing" .
+            ?job prod:executedOn ?machine .
+            OPTIONAL { ?job prod:currentOperationIndex ?opIndex }
+        }
+    """ .
+
+exec:ExecuteLocationQuery rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 2 ;
+    exec:hasOutputName "locationResults" ;
+    exec:hasEndpointTemplate "http://localhost:3030/production/query" ;
+    exec:hasInputMapping "${locationQuery}" .
+
+exec:EnrichLocationData rdf:type exec:DataEnricher ;
+    exec:actionType exec:DataTransform ;
+    exec:executionOrder 3 ;
+    exec:hasOutputName "enrichedLocationData" ;
+    exec:hasInputMapping "${locationResults}" ;
+    exec:hasEnrichmentType "addOperationDetails,calculateProgress" .
+
+# ===== Goal Instances =====
+
+# Goal 1: Query failed jobs with cooling
+exec:QueryFailedCoolingJobs rdf:type exec:QueryGoal ;
+    rdfs:label "query_failed_jobs_with_cooling" ;
+    exec:requiresAction exec:BuildJobQuery ;
+    exec:requiresAction exec:ExecuteJobQuery ;
+    exec:requiresAction exec:EnrichJobResults ;
+    exec:hasResultType exec:JobReport ;
+    rdfs:comment "Query failed jobs that require cooling" .
+
+# Goal 2: Detect anomaly for product
+exec:DetectProductAnomaly rdf:type exec:ComputeGoal ;
+    rdfs:label "detect_anomaly_for_product" ;
+    exec:requiresAction exec:BuildProductTraceQuery ;
+    exec:requiresAction exec:ExecuteProductTrace ;
+    exec:requiresAction exec:FetchSensorData ;
+    exec:requiresAction exec:RunAnomalyDetection ;
+    exec:hasResultType exec:AnomalyReport ;
+    rdfs:comment "Detect anomalies in product production" .
+
+# Goal 3: Predict completion time
+exec:PredictCompletionTime rdf:type exec:PredictionGoal ;
+    rdfs:label "predict_first_completion_time" ;
+    exec:requiresAction exec:BuildJobTemplateQuery ;
+    exec:requiresAction exec:FetchJobTemplate ;
+    exec:requiresAction exec:FetchMachineSchedule ;
+    exec:requiresAction exec:RunSimulation ;
+    exec:hasResultType exec:CompletionTimePrediction ;
+    rdfs:comment "Predict when first product will be completed" .
+
+# Goal 4: Track product position
+exec:TrackProductLocation rdf:type exec:QueryGoal ;
+    rdfs:label "track_product_position" ;
+    exec:requiresAction exec:BuildProductLocationQuery ;
+    exec:requiresAction exec:ExecuteLocationQuery ;
+    exec:requiresAction exec:EnrichLocationData ;
+    exec:hasResultType exec:ProductLocationReport ;
+    rdfs:comment "Track current position of a product" .
+
+# ===== Action Instances =====
+
+# Actions for Goal 1
+exec:BuildJobQuery rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 ;
+    exec:hasTemplate """
+        SELECT ?job ?machine ?startTime ?status
+        WHERE {
+            ?job rdf:type prod:Job .
+            %%FILTERS%%
+            OPTIONAL { ?job prod:executedOn ?machine }
+        }
+    """ .
+
+exec:ExecuteJobQuery rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 2 ;
+    exec:requiresInput exec:BuildJobQuery .
+
+exec:EnrichJobResults rdf:type exec:DataEnricher ;
+    exec:actionType exec:DataTransform ;
+    exec:executionOrder 3 ;
+    exec:requiresInput exec:ExecuteJobQuery .
+
+# Actions for Goal 2
+exec:BuildProductTraceQuery rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 .
+
+exec:ExecuteProductTrace rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 2 .
+
+exec:FetchSensorData rdf:type exec:AASConnector ;
+    exec:actionType exec:AASGet ;
+    exec:executionOrder 3 .
+
+exec:RunAnomalyDetection rdf:type exec:DockerExecutor ;
+    exec:actionType exec:DockerRun ;
+    exec:executionOrder 4 ;
+    exec:invokesModel "anomaly-detector:v2" .
+
+# Actions for Goal 3
+exec:BuildJobTemplateQuery rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 .
+
+exec:FetchJobTemplate rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 2 .
+
+exec:FetchMachineSchedule rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 3 .
+
+exec:RunSimulation rdf:type exec:DockerExecutor ;
+    exec:actionType exec:DockerRun ;
+    exec:executionOrder 4 ;
+    exec:invokesModel "fjsp-simulator:v1" .
+
+# Actions for Goal 4
+exec:BuildProductLocationQuery rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 .
+
+exec:ExecuteLocationQuery rdf:type exec:SPARQLExecutor ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 2 .
+
+exec:EnrichLocationData rdf:type exec:DataEnricher ;
+    exec:actionType exec:DataTransform ;
+    exec:executionOrder 3 .

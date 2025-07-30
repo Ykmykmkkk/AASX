@@ -1,0 +1,86 @@
+{
+  "goal": "QueryFailedCoolingJobs",
+  "timestamp": "2025-07-29T15:52:08.224661",
+  "steps": [
+    {
+      "step": 1,
+      "action": "BuildJobQuery",
+      "action_type": "SPARQLQuery",
+      "parameters": {
+        "goal": "query_failed_jobs_with_cooling",
+        "date": "2025-07-17"
+      },
+      "has_query": true,
+      "sparql_results": {
+        "query": "\n        PREFIX prod: <http://example.org/production-domain#>\n        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n        \n        SELECT ?job ?machine ?startTime ?status\n        WHERE {\n            ?job rdf:type prod:Job .\n            ?job prod:hasStartTime ?startTime .\n            ?job prod:hasStatus ?status .\n            ?job prod:requiresCooling true .\n            FILTER(?status = \"Failed\")\n            FILTER(STRSTARTS(STR(?startTime), \"2025-07-17\"))\n            OPTIONAL { ?job prod:executedOn ?machine }\n        }\n        ORDER BY DESC(?startTime)\n        LIMIT 100\n    ",
+        "results": [
+          {
+            "job": "Job-2003",
+            "machine": "CoolingMachine-04",
+            "startTime": "2025-07-17T11:30:00",
+            "status": "Failed"
+          },
+          {
+            "job": "Job-2002",
+            "machine": "CoolingMachine-02",
+            "startTime": "2025-07-17T09:15:00",
+            "status": "Failed"
+          },
+          {
+            "job": "Job-2001",
+            "machine": "CoolingMachine-01",
+            "startTime": "2025-07-17T08:00:00",
+            "status": "Failed"
+          }
+        ],
+        "count": 3
+      }
+    },
+    {
+      "step": 2,
+      "action": "EnrichJobResults",
+      "action_type": "DataTransform",
+      "parameters": {
+        "goal": "query_failed_jobs_with_cooling",
+        "date": "2025-07-17"
+      },
+      "enrichment_type": "fetchMachineDetails,parseErrorLogs"
+    },
+    {
+      "step": 3,
+      "action": "ExecuteJobQuery",
+      "action_type": "Unknown",
+      "parameters": {
+        "goal": "query_failed_jobs_with_cooling",
+        "date": "2025-07-17"
+      }
+    }
+  ],
+  "total_steps": 3,
+  "sparql_results": {
+    "BuildJobQuery": {
+      "query": "\n        PREFIX prod: <http://example.org/production-domain#>\n        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n        \n        SELECT ?job ?machine ?startTime ?status\n        WHERE {\n            ?job rdf:type prod:Job .\n            ?job prod:hasStartTime ?startTime .\n            ?job prod:hasStatus ?status .\n            ?job prod:requiresCooling true .\n            FILTER(?status = \"Failed\")\n            FILTER(STRSTARTS(STR(?startTime), \"2025-07-17\"))\n            OPTIONAL { ?job prod:executedOn ?machine }\n        }\n        ORDER BY DESC(?startTime)\n        LIMIT 100\n    ",
+      "results": [
+        {
+          "job": "Job-2003",
+          "machine": "CoolingMachine-04",
+          "startTime": "2025-07-17T11:30:00",
+          "status": "Failed"
+        },
+        {
+          "job": "Job-2002",
+          "machine": "CoolingMachine-02",
+          "startTime": "2025-07-17T09:15:00",
+          "status": "Failed"
+        },
+        {
+          "job": "Job-2001",
+          "machine": "CoolingMachine-01",
+          "startTime": "2025-07-17T08:00:00",
+          "status": "Failed"
+        }
+      ],
+      "count": 3
+    }
+  }
+}

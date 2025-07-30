@@ -1,0 +1,52 @@
+{
+  "test_date": "2025-07-29T14:36:54.785840",
+  "tests_run": 4,
+  "tests_passed": 4,
+  "total_duration": 10.155999999999999,
+  "test_results": [
+    {
+      "name": "Query Failed Jobs",
+      "status": "COMPLETED",
+      "duration": 2.312,
+      "steps": {
+        "total": 3,
+        "succeeded": 3,
+        "simulated": 0,
+        "failed": 0
+      }
+    },
+    {
+      "name": "Detect Anomaly",
+      "status": "COMPLETED",
+      "duration": 2.012,
+      "steps": {
+        "total": 4,
+        "succeeded": 3,
+        "simulated": 1,
+        "failed": 0
+      }
+    },
+    {
+      "name": "Predict Completion",
+      "status": "COMPLETED",
+      "duration": 3.517,
+      "steps": {
+        "total": 4,
+        "succeeded": 3,
+        "simulated": 1,
+        "failed": 0
+      }
+    },
+    {
+      "name": "Track Product",
+      "status": "COMPLETED",
+      "duration": 2.315,
+      "steps": {
+        "total": 3,
+        "succeeded": 3,
+        "simulated": 0,
+        "failed": 0
+      }
+    }
+  ]
+}
