@@ -24,6 +24,15 @@
           "value": "urn:aas:sm:Product-A1:Requirements"
         }
       ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:sm:Product-A1:TrackingInfo"
+        }
+      ]
     }
   ]
 }

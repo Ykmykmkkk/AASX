@@ -146,10 +146,50 @@ class AASClient:
             logger.error(f"Failed to get cooling products: {e}")
             return []
     
+    def get_product_location(self, product_id: str, 
+                           include_history: bool = False,
+                           timepoint: str = "T4") -> Optional[Dict[str, Any]]:
+        """제품 위치 조회 (Goal 4)"""
+        try:
+            params = {
+                "history": "true" if include_history else "false",
+                "timepoint": timepoint
+            }
+            response = self.session.get(
+                f"{self.base_url}/api/products/{product_id}/location",
+                params=params
+            )
+            response.raise_for_status()
+            location = response.json()
+            logger.info(f"Retrieved location for {product_id} at {timepoint}")
+            return location
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to get product location: {e}")
+            return None
+    
+    def get_all_product_tracking(self, timepoint: str = "T4") -> List[Dict[str, Any]]:
+        """모든 제품의 현재 위치 조회"""
+        try:
+            params = {"timepoint": timepoint}
+            response = self.session.get(
+                f"{self.base_url}/api/products/tracking",
+                params=params
+            )
+            response.raise_for_status()
+            tracking = response.json()
+            logger.info(f"Retrieved tracking for {len(tracking)} products at {timepoint}")
+            return tracking
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to get all product tracking: {e}")
+            return []
+    
     def call_api(self, endpoint: str, method: str = "GET", 
                 params: Optional[Dict] = None, 
                 data: Optional[Dict] = None) -> Optional[Any]:
         """일반 API 호출"""
+        if not HAS_REQUESTS:
+            logger.warning("⚠️ Cannot call API without requests module")
+            return None
         try:
             url = f"{self.base_url}{endpoint}"
             
@@ -221,3 +261,23 @@ if __name__ == "__main__":
     print(f"  Found {len(failed_jobs)} failed jobs")
     for job in failed_jobs:
         print(f"    - {job.get('job_id')}: {job.get('failure_reason')}")
+    
+    # Goal 4: 제품 위치 추적 테스트
+    print("\n📍 Testing Product Tracking (Goal 4)...")
+    
+    # 특정 제품 위치 조회
+    print("\n  Getting location for Product-B1...")
+    location = client.get_product_location("Product-B1", include_history=True)
+    if location:
+        current = location.get("current_location", {})
+        print(f"    Current: Zone={current.get('Zone')}, Station={current.get('Station')}")
+        print(f"    Status: {current.get('Status')}")
+        if "history" in location:
+            print(f"    History: {len(location['history'])} timepoints")
+    
+    # 모든 제품 추적
+    print("\n  Getting all product tracking...")
+    all_tracking = client.get_all_product_tracking("T4")
+    print(f"    Tracking {len(all_tracking)} products")
+    for track in all_tracking[:3]:  # 처음 3개만 출력
+        print(f"      - {track.get('product_id')}: {track.get('Zone')} / {track.get('Station')}")

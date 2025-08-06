@@ -1,0 +1,29 @@
+{
+  "modelType": "AssetAdministrationShell",
+  "id": "urn:aas:Product:Product-C1",
+  "idShort": "Product-C1",
+  "assetInformation": {
+    "assetKind": "Type",
+    "globalAssetId": "urn:company:products:product-c1"
+  },
+  "submodels": [
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:sm:Product-C1:Specification"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:sm:Product-C1:Requirements"
+        }
+      ]
+    }
+  ]
+}

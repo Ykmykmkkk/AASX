@@ -1,0 +1,64 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:Product-C1:TrackingInfo",
+  "idShort": "TrackingInfo",
+  "semanticId": {
+    "type": "ExternalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "0173-1#02-AAV558#001"
+      }
+    ]
+  },
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "Zone",
+      "value": "Zone-A",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Station",
+      "value": "CNC001",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Coordinates",
+      "value": "10.5,20.3,0",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "LastUpdate",
+      "value": "2025-07-17T08:00:00",
+      "valueType": "xs:dateTime"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Status",
+      "value": "ERROR",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "RFID",
+      "value": "TAG-C1",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "JobId",
+      "value": "JOB-002",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Progress",
+      "value": "60",
+      "valueType": "xs:integer"
+    }
+  ]
+}

@@ -69,6 +69,34 @@ class SnapshotToAASConverter:
         if timepoint == "T1":
             for product_id, product_data in snapshot.get("products", {}).items():
                 self.convert_product(product_id, product_data)
+        
+        # 제품 위치 추적 데이터 생성 (현재 시점만 - T4 중심)
+        # T4 시점만 TrackingInfo 생성 (Goal 4 단순화)
+        if timepoint == "T4":
+            jobs = snapshot.get("jobs", [])
+            machines = snapshot.get("machines", {})
+            products_in_jobs = set()
+            
+            for job in jobs:
+                product_id = job.get("product_id")
+                machine_id = job.get("machine_id")
+                if product_id and machine_id:
+                    products_in_jobs.add(product_id)
+                    machine_data = machines.get(machine_id, {})
+                    tracking_info = self.create_product_tracking_data(
+                        product_id, job, machine_data, timepoint
+                    )
+                    # 현재 위치만 저장 (시점 suffix 제거)
+                    self.save_submodel(tracking_info, f"{product_id}_TrackingInfo")
+            
+            # 작업에 없는 제품들의 기본 위치 데이터
+            all_products = snapshot.get("products", {}).keys() if timepoint == "T1" else []
+            for product_id in all_products:
+                if product_id not in products_in_jobs:
+                    tracking_info = self.create_product_tracking_data(
+                        product_id, None, {}, timepoint
+                    )
+                    self.save_submodel(tracking_info, f"{product_id}_TrackingInfo")
     
     def convert_machine(self, machine_id: str, machine_data: Dict, 
                        snapshot: Dict, timepoint: str):
@@ -343,6 +371,13 @@ class SnapshotToAASConverter:
                         "type": "Submodel",
                         "value": f"urn:aas:sm:{product_id}:Requirements"
                     }]
+                },
+                {
+                    "type": "ModelReference",
+                    "keys": [{
+                        "type": "Submodel",
+                        "value": f"urn:aas:sm:{product_id}:TrackingInfo"
+                    }]
                 }
             ]
         }
@@ -404,6 +439,73 @@ class SnapshotToAASConverter:
             ]
         }
         self.save_submodel(requirements, f"{product_id}_Requirements")
+    
+    def create_product_tracking_data(self, product_id: str, job_data: Dict, machine_data: Dict, timepoint: str):
+        """제품 위치 추적 데이터 생성 (Goal 4용 - 단순화)"""
+        # 작업 상태에 따른 위치 결정
+        if job_data:
+            machine_id = job_data.get("machine_id")
+            status = job_data.get("status")
+            
+            # 상태에 따른 위치와 타입 결정
+            if status in ["RUNNING", "FAILED"]:
+                location = machine_id
+                location_type = "Machine"
+                tracking_status = "ERROR" if status == "FAILED" else "PROCESSING"
+            elif status == "COMPLETED":
+                location = "QC_Station"
+                location_type = "QC"
+                tracking_status = "COMPLETED"
+            else:
+                location = "Buffer_Area"
+                location_type = "Buffer"
+                tracking_status = "WAITING"
+        else:
+            # 작업이 없는 경우 기본값
+            location = "Warehouse"
+            location_type = "Storage"
+            tracking_status = "STORED"
+        
+        tracking_info = {
+            "modelType": "Submodel",
+            "id": f"urn:aas:sm:{product_id}:TrackingInfo",
+            "idShort": "TrackingInfo",
+            "semanticId": {
+                "type": "ExternalReference",
+                "keys": [{
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAV558#001"  # Tracking and Tracing
+                }]
+            },
+            "submodelElements": [
+                {
+                    "modelType": "Property",
+                    "idShort": "CurrentLocation",
+                    "value": location,
+                    "valueType": "xs:string"
+                },
+                {
+                    "modelType": "Property",
+                    "idShort": "LocationType",
+                    "value": location_type,
+                    "valueType": "xs:string"
+                },
+                {
+                    "modelType": "Property",
+                    "idShort": "Status",
+                    "value": tracking_status,
+                    "valueType": "xs:string"
+                },
+                {
+                    "modelType": "Property",
+                    "idShort": "LastUpdate",
+                    "value": job_data.get("start_time", "") if job_data else "",
+                    "valueType": "xs:dateTime"
+                }
+            ]
+        }
+        
+        return tracking_info
     
     def save_submodel(self, submodel: Dict, filename: str):
         """Submodel을 파일로 저장"""

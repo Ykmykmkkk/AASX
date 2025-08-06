@@ -507,6 +507,539 @@ v6/
 
 ---
 
+## 📋 Goals 2-4 구현 계획 (2025-08-06)
+
+### Goal 2: Detect Anomaly for Product
+
+#### 목표
+제품의 센서 데이터를 분석하여 이상 패턴을 감지하고 예측
+
+#### 데이터 소스
+1. **AAS Server (정적)**
+   - Product Shell 정보
+   - Specification Submodel (정상 범위)
+   - Requirements Submodel (품질 기준)
+
+2. **Snapshots (동적)**
+   - T1-T5 시점별 센서 데이터
+   - Temperature, Pressure, Vibration 측정값
+   - 품질 측정 데이터
+
+3. **Docker Container (AI/ML)**
+   - 이상 감지 모델 실행
+   - TensorFlow/PyTorch 기반 분석
+   - 시계열 패턴 분석
+
+#### 실행 계획
+```python
+def execute_goal2(self, product_id: str, timepoint: str = "T4"):
+    # 1. AAS에서 제품 정보 조회
+    product_shell = self.aas_client.get_shell(f"urn:aas:Product:{product_id}")
+    spec = self.aas_client.get_submodel(f"urn:aas:sm:{product_id}:Specification")
+    
+    # 2. 시점별 센서 데이터 수집
+    sensor_data = []
+    for tp in ["T1", "T2", "T3", "T4", "T5"]:
+        timestamp = self.timepoint_to_timestamp(tp)
+        data = self.aas_client.get_submodel(
+            f"urn:aas:sm:{product_id}:SensorData",
+            timestamp
+        )
+        sensor_data.append(data)
+    
+    # 3. Docker 컨테이너로 이상 감지 실행
+    container_result = self.run_docker_container(
+        image="anomaly-detector:latest",
+        data={
+            "sensor_data": sensor_data,
+            "specification": spec,
+            "threshold": 0.95
+        }
+    )
+    
+    # 4. 결과 분석 및 리포트 생성
+    anomalies = container_result.get("anomalies", [])
+    confidence = container_result.get("confidence", 0)
+    
+    return {
+        "product_id": product_id,
+        "anomalies_detected": len(anomalies) > 0,
+        "anomaly_points": anomalies,
+        "confidence": confidence,
+        "recommendation": self.generate_recommendation(anomalies)
+    }
+```
+
+#### AAS Submodel 확장
+```json
+// SensorData Submodel (시점별)
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:Product-B1:SensorData",
+  "idShort": "SensorData",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "Temperature",
+      "value": "85.2",
+      "valueType": "xs:float",
+      "unit": "°C",
+      "timestamp": "2025-07-17T14:00:00"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Pressure",
+      "value": "2.8",
+      "valueType": "xs:float",
+      "unit": "bar"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Vibration",
+      "value": "0.45",
+      "valueType": "xs:float",
+      "unit": "mm/s"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "QualityScore",
+      "value": "0.92",
+      "valueType": "xs:float"
+    }
+  ]
+}
+```
+
+### Goal 3: Predict Completion Time
+
+#### 목표
+현재 작업 상태와 이력 데이터를 기반으로 작업 완료 시간 예측
+
+#### 데이터 소스
+1. **AAS Server**
+   - Machine Shell (장비 사양)
+   - TechnicalData (처리 능력)
+   - MaintenanceHistory (유지보수 이력)
+
+2. **Snapshots**
+   - JobHistory (과거 작업 이력)
+   - Current Job Status
+   - Queue Status
+
+3. **Docker Container**
+   - 시간 예측 ML 모델
+   - 회귀 분석 엔진
+
+#### 실행 계획
+```python
+def execute_goal3(self, job_id: str, machine_id: str):
+    # 1. 현재 작업 상태 조회
+    current_job = self.aas_client.get_submodel(
+        f"urn:aas:sm:{machine_id}:CurrentJob"
+    )
+    
+    # 2. 기계 성능 데이터
+    tech_data = self.aas_client.get_submodel(
+        f"urn:aas:sm:{machine_id}:TechnicalData"
+    )
+    
+    # 3. 과거 작업 이력 (학습 데이터)
+    job_history = self.aas_client.get_submodel(
+        f"urn:aas:sm:{machine_id}:JobHistory"
+    )
+    
+    # 4. Docker 컨테이너로 예측 실행
+    prediction = self.run_docker_container(
+        image="completion-predictor:latest",
+        data={
+            "current_job": current_job,
+            "machine_specs": tech_data,
+            "historical_jobs": job_history,
+            "algorithm": "xgboost"
+        }
+    )
+    
+    # 5. 예측 결과 처리
+    return {
+        "job_id": job_id,
+        "machine_id": machine_id,
+        "current_progress": current_job.get("progress", 0),
+        "predicted_completion": prediction.get("completion_time"),
+        "confidence_interval": prediction.get("confidence_interval"),
+        "factors": prediction.get("influencing_factors", [])
+    }
+```
+
+#### CurrentJob Submodel
+```json
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:CNC001:CurrentJob",
+  "idShort": "CurrentJob",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "JobId",
+      "value": "JOB-005"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "ProductId",
+      "value": "Product-A1"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "StartTime",
+      "value": "2025-07-17T08:00:00"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Progress",
+      "value": "65",
+      "valueType": "xs:integer",
+      "unit": "%"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "EstimatedRemaining",
+      "value": "45",
+      "valueType": "xs:integer",
+      "unit": "minutes"
+    }
+  ]
+}
+```
+
+### Goal 4: Track Product Position
+
+#### 목표
+제품의 실시간 위치와 이동 경로를 추적하고 시각화
+
+#### 데이터 소스
+1. **AAS Server**
+   - Product Shell
+   - TrackingInfo Submodel
+   - LocationHistory Submodel
+
+2. **Snapshots**
+   - 시점별 위치 데이터
+   - RFID/바코드 스캔 이력
+
+3. **실시간 업데이트**
+   - WebSocket 또는 SSE
+   - 위치 센서 데이터
+
+#### 실행 계획
+```python
+def execute_goal4(self, product_id: str, include_history: bool = True):
+    # 1. 제품 Shell 조회
+    product_shell = self.aas_client.get_shell(
+        f"urn:aas:Product:{product_id}"
+    )
+    
+    # 2. 현재 위치 조회
+    current_location = self.aas_client.get_submodel(
+        f"urn:aas:sm:{product_id}:TrackingInfo"
+    )
+    
+    # 3. 위치 이력 조회 (옵션)
+    location_history = []
+    if include_history:
+        for tp in ["T1", "T2", "T3", "T4", "T5"]:
+            timestamp = self.timepoint_to_timestamp(tp)
+            location = self.aas_client.get_submodel(
+                f"urn:aas:sm:{product_id}:TrackingInfo",
+                timestamp
+            )
+            if location:
+                location_history.append({
+                    "timepoint": tp,
+                    "location": location.get("CurrentLocation"),
+                    "timestamp": timestamp
+                })
+    
+    # 4. 이동 경로 분석
+    movement_pattern = self.analyze_movement(location_history)
+    
+    # 5. 다음 위치 예측 (선택적)
+    next_location = self.predict_next_location(
+        current_location, 
+        movement_pattern
+    )
+    
+    return {
+        "product_id": product_id,
+        "current_location": {
+            "zone": current_location.get("Zone"),
+            "station": current_location.get("Station"),
+            "coordinates": current_location.get("Coordinates"),
+            "last_update": current_location.get("LastUpdate")
+        },
+        "location_history": location_history,
+        "movement_pattern": movement_pattern,
+        "predicted_next": next_location,
+        "status": current_location.get("Status", "IN_TRANSIT")
+    }
+```
+
+#### TrackingInfo Submodel
+```json
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:Product-B1:TrackingInfo",
+  "idShort": "TrackingInfo",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "Zone",
+      "value": "Production"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Station",
+      "value": "CNC001"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Coordinates",
+      "value": "{'x': 120.5, 'y': 45.2, 'z': 0}"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "LastUpdate",
+      "value": "2025-07-17T14:30:00"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Status",
+      "value": "PROCESSING"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "RFID",
+      "value": "TAG-001234"
+    }
+  ]
+}
+```
+
+### Docker Container Integration
+
+#### Container 구조
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  anomaly-detector:
+    image: anomaly-detector:latest
+    ports:
+      - "5002:5000"
+    environment:
+      - MODEL_PATH=/models/anomaly_model.pkl
+      - THRESHOLD=0.95
+    volumes:
+      - ./models:/models
+      - ./data:/data
+  
+  completion-predictor:
+    image: completion-predictor:latest
+    ports:
+      - "5003:5000"
+    environment:
+      - MODEL_TYPE=xgboost
+      - TRAINING_DATA=/data/historical_jobs.csv
+    volumes:
+      - ./models:/models
+      - ./data:/data
+```
+
+#### Container 실행 로직
+```python
+class ContainerExecutor:
+    def __init__(self):
+        self.docker_client = docker.from_env()
+    
+    def run_container(self, image: str, data: Dict, timeout: int = 30):
+        """Docker 컨테이너 실행 및 결과 반환"""
+        try:
+            # 데이터를 임시 파일로 저장
+            input_file = f"/tmp/input_{uuid.uuid4()}.json"
+            with open(input_file, 'w') as f:
+                json.dump(data, f)
+            
+            # 컨테이너 실행
+            container = self.docker_client.containers.run(
+                image,
+                command=f"python analyze.py {input_file}",
+                volumes={'/tmp': {'bind': '/data', 'mode': 'rw'}},
+                detach=True
+            )
+            
+            # 결과 대기 (timeout)
+            result = container.wait(timeout=timeout)
+            output = container.logs()
+            
+            # 결과 파싱
+            return json.loads(output)
+            
+        except Exception as e:
+            logger.error(f"Container execution failed: {e}")
+            # Fallback to simple analysis
+            return self.simple_analysis(data)
+    
+    def simple_analysis(self, data: Dict):
+        """Docker 실패 시 간단한 분석 수행"""
+        # 기본 규칙 기반 분석
+        return {
+            "status": "fallback",
+            "result": "basic_analysis",
+            "confidence": 0.7
+        }
+```
+
+### Mock Server 확장 (Goals 2-4)
+
+```python
+# Mock Server에 추가할 엔드포인트
+
+@app.route('/api/products/<product_id>/sensor-data', methods=['GET'])
+def get_product_sensor_data(product_id):
+    """제품 센서 데이터 조회 (Goal 2)"""
+    timepoint = request.args.get('timepoint', 'T4')
+    sensor_data_id = f"urn:aas:sm:{product_id}:SensorData"
+    
+    data = server.get_submodel_at_time(sensor_data_id, timepoint)
+    if data:
+        return jsonify(data)
+    return jsonify({"error": "Sensor data not found"}), 404
+
+@app.route('/api/machines/<machine_id>/current-job', methods=['GET'])
+def get_current_job(machine_id):
+    """현재 작업 조회 (Goal 3)"""
+    job_id = f"urn:aas:sm:{machine_id}:CurrentJob"
+    job = server.get_latest_submodel(job_id)
+    
+    if job:
+        return jsonify(job)
+    return jsonify({"error": "No current job"}), 404
+
+@app.route('/api/products/<product_id>/location', methods=['GET'])
+def get_product_location(product_id):
+    """제품 위치 조회 (Goal 4)"""
+    include_history = request.args.get('history', 'false').lower() == 'true'
+    
+    tracking_id = f"urn:aas:sm:{product_id}:TrackingInfo"
+    current = server.get_latest_submodel(tracking_id)
+    
+    result = {
+        "product_id": product_id,
+        "current_location": current
+    }
+    
+    if include_history:
+        history = []
+        for tp in ["T1", "T2", "T3", "T4", "T5"]:
+            location = server.get_submodel_at_time(tracking_id, tp)
+            if location:
+                history.append({
+                    "timepoint": tp,
+                    "location": location
+                })
+        result["history"] = history
+    
+    return jsonify(result)
+```
+
+### 테스트 시나리오
+
+#### Goal 2 테스트
+```python
+# test_goal2.py
+def test_goal2_anomaly_detection():
+    executor = ExecutionPlanner()
+    
+    result = executor.execute_goal({
+        "goal": "detect_anomaly",
+        "parameters": {
+            "product_id": "Product-B1",
+            "timepoint": "T4"
+        }
+    })
+    
+    assert result["anomalies_detected"] == True
+    assert result["confidence"] > 0.9
+    assert "temperature_spike" in result["anomaly_points"]
+```
+
+#### Goal 3 테스트
+```python
+# test_goal3.py
+def test_goal3_completion_prediction():
+    executor = ExecutionPlanner()
+    
+    result = executor.execute_goal({
+        "goal": "predict_completion",
+        "parameters": {
+            "job_id": "JOB-005",
+            "machine_id": "CNC001"
+        }
+    })
+    
+    assert "predicted_completion" in result
+    assert result["current_progress"] == 65
+    assert result["confidence_interval"][0] < result["predicted_completion"]
+```
+
+#### Goal 4 테스트
+```python
+# test_goal4.py
+def test_goal4_product_tracking():
+    executor = ExecutionPlanner()
+    
+    result = executor.execute_goal({
+        "goal": "track_product",
+        "parameters": {
+            "product_id": "Product-B1",
+            "include_history": True
+        }
+    })
+    
+    assert result["current_location"]["station"] == "CNC001"
+    assert len(result["location_history"]) == 5
+    assert result["status"] == "PROCESSING"
+```
+
+### 구현 우선순위
+
+1. **Phase 1: Goal 4 (가장 간단)**
+   - AAS Submodel 확장 (TrackingInfo)
+   - Mock Server 엔드포인트 추가
+   - 위치 추적 로직 구현
+   - 테스트 작성
+
+2. **Phase 2: Goal 2 (중간 복잡도)**
+   - SensorData Submodel 추가
+   - 이상 감지 로직 (규칙 기반)
+   - Docker 컨테이너 시뮬레이션
+   - 테스트 및 검증
+
+3. **Phase 3: Goal 3 (가장 복잡)**
+   - CurrentJob Submodel
+   - 예측 모델 시뮬레이션
+   - 이력 데이터 분석
+   - 통합 테스트
+
+### 예상 일정
+- Goal 4: 1일 (위치 추적)
+- Goal 2: 2일 (이상 감지)
+- Goal 3: 2일 (완료 시간 예측)
+- 통합 테스트: 1일
+- 문서화: 1일
+
+**총 예상 기간**: 1주일
+
+---
+
 **작성일**: 2025-08-06  
-**버전**: v6 개선 계획  
-**상태**: 구현 준비 완료
+**버전**: v6 Goals 2-4 구현 계획  
+**상태**: Goal 1 완료, Goals 2-4 계획 수립 완료

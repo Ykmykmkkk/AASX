@@ -1,0 +1,40 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:Product-A1:TrackingInfo",
+  "idShort": "TrackingInfo",
+  "semanticId": {
+    "type": "ExternalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "0173-1#02-AAV558#001"
+      }
+    ]
+  },
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "CurrentLocation",
+      "value": "QC_Station",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "LocationType",
+      "value": "QC",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Status",
+      "value": "COMPLETED",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "LastUpdate",
+      "value": "2025-07-17T08:00:00",
+      "valueType": "xs:dateTime"
+    }
+  ]
+}

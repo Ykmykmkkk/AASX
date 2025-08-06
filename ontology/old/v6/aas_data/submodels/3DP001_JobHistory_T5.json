@@ -1,0 +1,37 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:3DP001:JobHistory",
+  "idShort": "JobHistory",
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "JOB-005",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "ProductId",
+          "value": "Product-D1",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Status",
+          "value": "IN_PROGRESS",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Progress",
+          "value": "10",
+          "valueType": "xs:integer"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "StartTime",
+          "value": "2025-07-17T16:00:00",
+          "valueType": "xs:dateTime"
+        }
+      ]
+    }
+  ]
+}

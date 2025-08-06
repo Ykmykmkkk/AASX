@@ -54,6 +54,16 @@ class DataCollectorV2:
             elif "failed" in endpoint and "jobs" in endpoint:
                 date = params.get("date", "2025-07-17") if params else "2025-07-17"
                 return self.aas_client.get_failed_jobs(date)
+            elif "/api/products/" in endpoint and "/location" in endpoint:
+                # Goal 4: Product location endpoint
+                product_id = endpoint.split("/api/products/")[1].split("/location")[0]
+                include_history = params.get("history", False) if params else False
+                timepoint = params.get("timepoint", "T4") if params else "T4"
+                return self.aas_client.get_product_location(product_id, include_history, timepoint)
+            elif "/api/products/tracking" in endpoint:
+                # Goal 4: All product tracking
+                timepoint = params.get("timepoint", "T4") if params else "T4"
+                return self.aas_client.get_all_product_tracking(timepoint)
             elif endpoint.startswith("/shells/"):
                 shell_id = endpoint.split("/shells/")[1]
                 return self.aas_client.get_shell(shell_id)
@@ -236,6 +246,125 @@ class DataCollectorV2:
         
         logger.info(f"🔍 Filtered {len(failed_jobs)} failed jobs with cooling")
         return failed_jobs
+    
+    # ===== Goal 4: Product Tracking Methods =====
+    
+    def collect_product_location(self, product_id: str, 
+                                include_history: bool = False,
+                                timepoint: str = "T4") -> Optional[Dict[str, Any]]:
+        """제품 위치 수집 (Goal 4)"""
+        # 1차: AAS Server
+        if self.aas_client:
+            location = self.aas_client.get_product_location(
+                product_id, include_history, timepoint
+            )
+            if location:
+                logger.info(f"✅ Got location for {product_id} from AAS Server")
+                return location
+        
+        # 2차: 로컬 스냅샷 fallback
+        logger.info(f"📂 Falling back to local snapshot for {product_id} location")
+        
+        # 현재 위치 찾기
+        current_location = self._find_product_in_snapshot(product_id, timepoint)
+        
+        result = {
+            "product_id": product_id,
+            "current_location": current_location,
+            "timepoint": timepoint
+        }
+        
+        # 이력 조회
+        if include_history:
+            history = []
+            for tp in ["T1", "T2", "T3", "T4", "T5"]:
+                loc = self._find_product_in_snapshot(product_id, tp)
+                if loc:
+                    history.append({
+                        "timepoint": tp,
+                        "location": loc
+                    })
+            result["history"] = history
+        
+        return result
+    
+    def _find_product_in_snapshot(self, product_id: str, timepoint: str) -> Dict[str, Any]:
+        """스냅샷에서 제품 위치 찾기"""
+        jobs = self.collect_from_snapshot(timepoint, "jobs")
+        machines = self.collect_from_snapshot(timepoint, "machines")
+        
+        if not jobs:
+            return {
+                "Zone": "Storage",
+                "Station": "Warehouse",
+                "Status": "STORED",
+                "RFID": f"TAG-{product_id.replace('Product-', '')}"
+            }
+        
+        # 제품의 작업 찾기
+        for job in jobs:
+            if job.get("product_id") == product_id:
+                machine_id = job.get("machine_id")
+                machine = machines.get(machine_id, {}) if machines else {}
+                
+                location = machine.get("location", {})
+                status = job.get("status")
+                
+                # 상태에 따른 위치 결정
+                if status in ["RUNNING", "FAILED"]:
+                    station = machine_id
+                    tracking_status = "ERROR" if status == "FAILED" else "PROCESSING"
+                elif status == "COMPLETED":
+                    station = "QC_Station"
+                    tracking_status = "COMPLETED"
+                else:
+                    station = "Buffer_Area"
+                    tracking_status = "WAITING"
+                
+                return {
+                    "Zone": location.get("zone", "Unknown"),
+                    "Station": station,
+                    "Coordinates": location.get("coordinates", "0,0,0"),
+                    "Status": tracking_status,
+                    "JobId": job.get("job_id", ""),
+                    "Progress": str(job.get("progress", 0)),
+                    "RFID": f"TAG-{product_id.replace('Product-', '')}",
+                    "LastUpdate": job.get("start_time", "")
+                }
+        
+        # 작업이 없는 경우
+        return {
+            "Zone": "Storage",
+            "Station": "Warehouse",
+            "Status": "STORED",
+            "RFID": f"TAG-{product_id.replace('Product-', '')}"
+        }
+    
+    def collect_all_product_tracking(self, timepoint: str = "T4") -> List[Dict[str, Any]]:
+        """모든 제품의 현재 위치 수집"""
+        # 1차: AAS Server
+        if self.aas_client:
+            tracking = self.aas_client.get_all_product_tracking(timepoint)
+            if tracking:
+                logger.info(f"✅ Got tracking for {len(tracking)} products from AAS Server")
+                return tracking
+        
+        # 2차: 로컬 스냅샷 fallback
+        logger.info("📂 Falling back to local snapshot for all product tracking")
+        
+        # 스냅샷에서 모든 제품 찾기
+        products = self.collect_from_snapshot("T1", "products")
+        if not products:
+            return []
+        
+        tracking_data = []
+        for product_id in products.keys():
+            location = self._find_product_in_snapshot(product_id, timepoint)
+            if location:
+                location["product_id"] = product_id
+                tracking_data.append(location)
+        
+        return tracking_data
 
 
 if __name__ == "__main__":
@@ -272,3 +401,25 @@ if __name__ == "__main__":
         print("\n🔍 Testing filter:")
         filtered = collector.filter_failed_jobs(jobs, products, machines)
         print(f"  Filtered: {len(filtered)} failed jobs with cooling")
+    
+    # Goal 4: 제품 위치 추적 테스트
+    print("\n" + "=" * 60)
+    print("📍 Testing Goal 4: Product Tracking")
+    print("=" * 60)
+    
+    # 특정 제품 위치
+    print("\n📦 Product-B1 location:")
+    location = collector.collect_product_location("Product-B1", include_history=True)
+    if location:
+        current = location.get("current_location", {})
+        print(f"  Current: Zone={current.get('Zone')}, Station={current.get('Station')}")
+        print(f"  Status: {current.get('Status')}")
+        if "history" in location:
+            print(f"  History: {len(location['history'])} timepoints")
+    
+    # 모든 제품 추적
+    print("\n🌍 All product tracking:")
+    all_tracking = collector.collect_all_product_tracking("T4")
+    print(f"  Tracking {len(all_tracking)} products")
+    for track in all_tracking:
+        print(f"    - {track.get('product_id')}: {track.get('Zone')} / {track.get('Station')}")

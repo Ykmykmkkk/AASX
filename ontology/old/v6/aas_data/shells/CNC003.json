@@ -1,0 +1,47 @@
+{
+  "modelType": "AssetAdministrationShell",
+  "id": "urn:aas:Machine:CNC003",
+  "idShort": "CNC003",
+  "assetInformation": {
+    "assetKind": "Instance",
+    "globalAssetId": "urn:company:machines:cnc003"
+  },
+  "submodels": [
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:sm:CNC003:Nameplate"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:sm:CNC003:TechnicalData"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:sm:CNC003:OperationalData"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:sm:CNC003:JobHistory"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:Product-B1:Specification",
+  "idShort": "Specification",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "ProductName",
+      "value": "Aluminum Housing",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "CriticalTemperature",
+      "value": "30",
+      "valueType": "xs:float",
+      "unit": "°C"
+    }
+  ]
+}

@@ -289,6 +289,81 @@ def get_cooling_products():
     return jsonify(cooling_products)
 
 
+# ===== Goal 4: Product Tracking 엔드포인트 =====
+
+@app.route('/api/products/<product_id>/location', methods=['GET'])
+def get_product_location(product_id):
+    """제품 위치 조회 (Goal 4)"""
+    include_history = request.args.get('history', 'false').lower() == 'true'
+    timepoint = request.args.get('timepoint', 'T4')
+    
+    tracking_id = f"urn:aas:sm:{product_id}:TrackingInfo"
+    
+    # 현재 위치 조회 (지정된 시점 또는 최신)
+    current = server.get_submodel_at_time(tracking_id, timepoint)
+    
+    if not current:
+        return jsonify({"error": f"Tracking info not found for {product_id}"}), 404
+    
+    # 현재 위치 정보 추출
+    current_location = {}
+    for element in current.get("submodelElements", []):
+        id_short = element.get("idShort")
+        value = element.get("value")
+        current_location[id_short] = value
+    
+    result = {
+        "product_id": product_id,
+        "current_location": current_location,
+        "timepoint": timepoint
+    }
+    
+    # 이력 조회 (옵션)
+    if include_history:
+        history = []
+        for tp in ["T1", "T2", "T3", "T4", "T5"]:
+            location_data = server.get_submodel_at_time(tracking_id, tp)
+            if location_data:
+                location_info = {}
+                for element in location_data.get("submodelElements", []):
+                    id_short = element.get("idShort")
+                    value = element.get("value")
+                    location_info[id_short] = value
+                
+                history.append({
+                    "timepoint": tp,
+                    "location": location_info
+                })
+        result["history"] = history
+    
+    logger.info(f"Product location requested for {product_id} at {timepoint}")
+    return jsonify(result)
+
+
+@app.route('/api/products/tracking', methods=['GET'])
+def get_all_product_tracking():
+    """모든 제품의 현재 위치 조회"""
+    timepoint = request.args.get('timepoint', 'T4')
+    tracking_data = []
+    
+    for shell_id, shell in server.shells.items():
+        if "Product" in shell_id:
+            product_id = shell.get("idShort")
+            tracking_id = f"urn:aas:sm:{product_id}:TrackingInfo"
+            
+            location_data = server.get_submodel_at_time(tracking_id, timepoint)
+            if location_data:
+                location_info = {"product_id": product_id}
+                for element in location_data.get("submodelElements", []):
+                    id_short = element.get("idShort")
+                    value = element.get("value")
+                    location_info[id_short] = value
+                tracking_data.append(location_info)
+    
+    logger.info(f"All product tracking requested at {timepoint}: {len(tracking_data)} products")
+    return jsonify(tracking_data)
+
+
 if __name__ == '__main__':
     print("=" * 60)
     print("🚀 Starting AAS Mock Server v6")
@@ -299,6 +374,9 @@ if __name__ == '__main__':
     print(f"⏰ Timepoints available: {list(server.timepoint_submodels.keys())}")
     print("=" * 60)
     print("🌐 Server running at: http://localhost:5001")
+    print("📍 Goal 4 endpoints:")
+    print("   - GET /api/products/<product_id>/location")
+    print("   - GET /api/products/tracking")
     print("=" * 60)
     
     app.run(host='0.0.0.0', port=5001, debug=True)
