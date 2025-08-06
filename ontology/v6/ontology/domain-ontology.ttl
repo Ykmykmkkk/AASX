@@ -1,0 +1,312 @@
+@prefix prod: <http://example.org/production#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================
+# Production Domain Ontology - WHAT we work with
+# ============================================
+
+# ===== Core Manufacturing Classes =====
+
+prod:Scenario a owl:Class ;
+    rdfs:label "Production Scenario" ;
+    rdfs:comment "A complete production plan for manufacturing products" .
+
+prod:Product a owl:Class ;
+    rdfs:label "Product" ;
+    rdfs:comment "A product or part that can be manufactured" .
+
+prod:Job a owl:Class ;
+    rdfs:label "Job" ;
+    rdfs:comment "A unit of work to produce one or more products" .
+
+prod:Operation a owl:Class ;
+    rdfs:label "Operation" ;
+    rdfs:comment "A single manufacturing operation within a job" .
+
+prod:Machine a owl:Class ;
+    rdfs:label "Machine" ;
+    rdfs:comment "Manufacturing equipment or machinery" .
+
+prod:Capability a owl:Class ;
+    rdfs:label "Machine Capability" ;
+    rdfs:comment "A capability that a machine can provide" .
+
+# ===== Status Classes =====
+
+prod:Status a owl:Class ;
+    rdfs:label "Status" ;
+    rdfs:comment "Status of an entity" .
+
+prod:JobStatus a owl:Class ;
+    rdfs:subClassOf prod:Status ;
+    rdfs:comment "Status of a job: PENDING, IN_PROGRESS, COMPLETED, FAILED" .
+
+prod:MachineStatus a owl:Class ;
+    rdfs:subClassOf prod:Status ;
+    rdfs:comment "Status of a machine: IDLE, RUNNING, WARNING, ERROR, MAINTENANCE" .
+
+# ===== Data Classes =====
+
+prod:SensorData a owl:Class ;
+    rdfs:label "Sensor Data" ;
+    rdfs:comment "Time series sensor measurements" .
+
+prod:Location a owl:Class ;
+    rdfs:label "Location" ;
+    rdfs:comment "Physical location in the factory" .
+
+prod:BillOfMaterials a owl:Class ;
+    rdfs:label "Bill of Materials" ;
+    rdfs:comment "Components required to build a product" .
+
+# ===== Properties: Scenario =====
+
+prod:hasScenarioId a owl:DatatypeProperty ;
+    rdfs:domain prod:Scenario ;
+    rdfs:range xsd:string .
+
+prod:hasTargetProduct a owl:ObjectProperty ;
+    rdfs:domain prod:Scenario ;
+    rdfs:range prod:Product .
+
+prod:targetQuantity a owl:DatatypeProperty ;
+    rdfs:domain prod:Scenario ;
+    rdfs:range xsd:integer .
+
+prod:deadline a owl:DatatypeProperty ;
+    rdfs:domain prod:Scenario ;
+    rdfs:range xsd:dateTime .
+
+prod:containsJob a owl:ObjectProperty ;
+    rdfs:domain prod:Scenario ;
+    rdfs:range prod:Job .
+
+# ===== Properties: Product =====
+
+prod:productId a owl:DatatypeProperty ;
+    rdfs:domain prod:Product ;
+    rdfs:range xsd:string .
+
+prod:productName a owl:DatatypeProperty ;
+    rdfs:domain prod:Product ;
+    rdfs:range xsd:string .
+
+prod:requiresCooling a owl:DatatypeProperty ;
+    rdfs:domain prod:Product ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Whether this product requires cooling during manufacturing" .
+
+prod:temperatureRange a owl:DatatypeProperty ;
+    rdfs:domain prod:Product ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Required temperature range as 'min-max' in Celsius" .
+
+prod:hasBOM a owl:ObjectProperty ;
+    rdfs:domain prod:Product ;
+    rdfs:range prod:BillOfMaterials .
+
+prod:hasNormalPattern a owl:ObjectProperty ;
+    rdfs:domain prod:Product ;
+    rdfs:range prod:SensorPattern ;
+    rdfs:comment "Normal sensor patterns for this product" .
+
+# ===== Properties: Job =====
+
+prod:jobId a owl:DatatypeProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range xsd:string .
+
+prod:producesProduct a owl:ObjectProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range prod:Product .
+
+prod:hasJobStatus a owl:ObjectProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range prod:JobStatus .
+
+prod:startTime a owl:DatatypeProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range xsd:dateTime .
+
+prod:endTime a owl:DatatypeProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range xsd:dateTime .
+
+prod:assignedMachine a owl:ObjectProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range prod:Machine .
+
+prod:hasOperation a owl:ObjectProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range prod:Operation .
+
+prod:failureReason a owl:DatatypeProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Reason for job failure if status is FAILED" .
+
+prod:executionDate a owl:DatatypeProperty ;
+    rdfs:domain prod:Job ;
+    rdfs:range xsd:date ;
+    rdfs:comment "Date when the job was executed" .
+
+# ===== Properties: Operation =====
+
+prod:operationId a owl:DatatypeProperty ;
+    rdfs:domain prod:Operation ;
+    rdfs:range xsd:string .
+
+prod:operationType a owl:DatatypeProperty ;
+    rdfs:domain prod:Operation ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Type: CUTTING, COOLING, ASSEMBLY, TESTING, etc." .
+
+prod:sequence a owl:DatatypeProperty ;
+    rdfs:domain prod:Operation ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Sequence order within a job" .
+
+prod:plannedDuration a owl:DatatypeProperty ;
+    rdfs:domain prod:Operation ;
+    rdfs:range xsd:duration .
+
+prod:actualDuration a owl:DatatypeProperty ;
+    rdfs:domain prod:Operation ;
+    rdfs:range xsd:duration .
+
+prod:requiresCapability a owl:ObjectProperty ;
+    rdfs:domain prod:Operation ;
+    rdfs:range prod:Capability .
+
+prod:currentMachine a owl:ObjectProperty ;
+    rdfs:domain prod:Operation ;
+    rdfs:range prod:Machine .
+
+prod:progress a owl:DatatypeProperty ;
+    rdfs:domain prod:Operation ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Progress percentage (0-100)" .
+
+# ===== Properties: Machine =====
+
+prod:machineId a owl:DatatypeProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range xsd:string .
+
+prod:machineName a owl:DatatypeProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range xsd:string .
+
+prod:machineType a owl:DatatypeProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Type: CNC, COOLING, ASSEMBLY, etc." .
+
+prod:hasCapability a owl:ObjectProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range prod:Capability .
+
+prod:hasMachineStatus a owl:ObjectProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range prod:MachineStatus .
+
+prod:currentJob a owl:ObjectProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range prod:Job .
+
+prod:locatedIn a owl:ObjectProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range prod:Location .
+
+prod:coordinates a owl:DatatypeProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Physical coordinates as 'x,y,z'" .
+
+prod:healthScore a owl:DatatypeProperty ;
+    rdfs:domain prod:Machine ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Machine health score (0-100)" .
+
+# ===== Properties: Sensor Data =====
+
+prod:timestamp a owl:DatatypeProperty ;
+    rdfs:domain prod:SensorData ;
+    rdfs:range xsd:dateTime .
+
+prod:temperature a owl:DatatypeProperty ;
+    rdfs:domain prod:SensorData ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Temperature in Celsius" .
+
+prod:pressure a owl:DatatypeProperty ;
+    rdfs:domain prod:SensorData ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Pressure in bar" .
+
+prod:vibration a owl:DatatypeProperty ;
+    rdfs:domain prod:SensorData ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Vibration in mm/s" .
+
+prod:metric a owl:DatatypeProperty ;
+    rdfs:domain prod:SensorPattern ;
+    rdfs:range xsd:string .
+
+prod:minValue a owl:DatatypeProperty ;
+    rdfs:domain prod:SensorPattern ;
+    rdfs:range xsd:decimal .
+
+prod:maxValue a owl:DatatypeProperty ;
+    rdfs:domain prod:SensorPattern ;
+    rdfs:range xsd:decimal .
+
+prod:meanValue a owl:DatatypeProperty ;
+    rdfs:domain prod:SensorPattern ;
+    rdfs:range xsd:decimal .
+
+# ===== Capability Definitions =====
+
+prod:CuttingCapability a prod:Capability ;
+    rdfs:label "Cutting Capability" .
+
+prod:CoolingCapability a prod:Capability ;
+    rdfs:label "Cooling Capability" .
+
+prod:AssemblyCapability a prod:Capability ;
+    rdfs:label "Assembly Capability" .
+
+prod:TestingCapability a prod:Capability ;
+    rdfs:label "Testing Capability" .
+
+# ===== Status Individuals =====
+
+prod:PENDING a prod:JobStatus ;
+    rdfs:label "Pending" .
+
+prod:IN_PROGRESS a prod:JobStatus ;
+    rdfs:label "In Progress" .
+
+prod:COMPLETED a prod:JobStatus ;
+    rdfs:label "Completed" .
+
+prod:FAILED a prod:JobStatus ;
+    rdfs:label "Failed" .
+
+prod:IDLE a prod:MachineStatus ;
+    rdfs:label "Idle" .
+
+prod:RUNNING a prod:MachineStatus ;
+    rdfs:label "Running" .
+
+prod:WARNING a prod:MachineStatus ;
+    rdfs:label "Warning" .
+
+prod:ERROR a prod:MachineStatus ;
+    rdfs:label "Error" .
+
+prod:MAINTENANCE a prod:MachineStatus ;
+    rdfs:label "Maintenance" .

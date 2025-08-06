@@ -1,0 +1,397 @@
+@prefix exec: <http://example.org/execution#> .
+@prefix prod: <http://example.org/production#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================
+# Execution Ontology - HOW to execute goals
+# ============================================
+
+# ===== Core Classes =====
+
+exec:Goal a owl:Class ;
+    rdfs:label "Execution Goal" ;
+    rdfs:comment "A high-level goal that can be executed" .
+
+exec:Action a owl:Class ;
+    rdfs:label "Execution Action" ;
+    rdfs:comment "An atomic action that performs a specific task" .
+
+exec:DataSource a owl:Class ;
+    rdfs:label "Data Source" ;
+    rdfs:comment "Source from which data can be retrieved" .
+
+exec:ExecutionPlan a owl:Class ;
+    rdfs:label "Execution Plan" ;
+    rdfs:comment "A sequence of actions to achieve a goal" .
+
+# ===== Properties =====
+
+exec:hasAction a owl:ObjectProperty ;
+    rdfs:domain exec:Goal ;
+    rdfs:range exec:Action ;
+    rdfs:comment "Actions required for this goal" .
+
+exec:actionType a owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Type of action: SPARQL, AAS_API, CONTAINER, FILTER, TRANSFORM" .
+
+exec:executionOrder a owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Order in which action should be executed" .
+
+exec:dataSource a owl:ObjectProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range exec:DataSource ;
+    rdfs:comment "Data source for this action" .
+
+exec:query a owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Query string for SPARQL actions" .
+
+exec:endpoint a owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "API endpoint for REST actions" .
+
+exec:containerImage a owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Docker image for container actions" .
+
+exec:requiresInput a owl:ObjectProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range exec:Action ;
+    rdfs:comment "Previous action whose output is required" .
+
+# ===== Data Sources =====
+
+exec:AASServer a exec:DataSource ;
+    rdfs:label "AAS REST API Server" ;
+    exec:baseUrl "http://localhost:5001" ;
+    exec:type "REST_API" .
+
+exec:SPARQLEndpoint a exec:DataSource ;
+    rdfs:label "SPARQL Query Endpoint" ;
+    exec:type "SPARQL" .
+
+exec:SnapshotStore a exec:DataSource ;
+    rdfs:label "Snapshot Data Store" ;
+    exec:type "SNAPSHOT" .
+
+exec:DockerEngine a exec:DataSource ;
+    rdfs:label "Docker Container Runtime" ;
+    exec:type "CONTAINER" .
+
+# ============================================
+# Goal 1: Query Failed Jobs with Cooling
+# ============================================
+
+exec:QueryFailedCoolingJobs a exec:Goal ;
+    rdfs:label "Query Failed Jobs with Cooling Requirements" ;
+    exec:hasAction exec:G1_QueryCoolingProducts ;
+    exec:hasAction exec:G1_GetCoolingMachines ;
+    exec:hasAction exec:G1_GetJobHistory ;
+    exec:hasAction exec:G1_FilterFailedJobs ;
+    exec:hasAction exec:G1_GenerateReport .
+
+# Step 1: Query products that require cooling
+exec:G1_QueryCoolingProducts a exec:Action ;
+    rdfs:label "Query Cooling Products" ;
+    exec:actionType "SPARQL" ;
+    exec:executionOrder 1 ;
+    exec:dataSource exec:SPARQLEndpoint ;
+    exec:query """
+        PREFIX prod: <http://example.org/production#>
+        SELECT ?product ?name WHERE {
+            ?product a prod:Product ;
+                    prod:productName ?name ;
+                    prod:requiresCooling true .
+        }
+    """ ;
+    exec:outputVariable "cooling_products" .
+
+# Step 2: Get machines with cooling capability
+exec:G1_GetCoolingMachines a exec:Action ;
+    rdfs:label "Get Cooling Machines" ;
+    exec:actionType "AAS_API" ;
+    exec:executionOrder 2 ;
+    exec:dataSource exec:AASServer ;
+    exec:endpoint "/api/machines/cooling-required" ;
+    exec:method "GET" ;
+    exec:outputVariable "cooling_machines" .
+
+# Step 3: Get job history from snapshot
+exec:G1_GetJobHistory a exec:Action ;
+    rdfs:label "Get Job History" ;
+    exec:actionType "SNAPSHOT" ;
+    exec:executionOrder 3 ;
+    exec:dataSource exec:SnapshotStore ;
+    exec:snapshotTime "2025-07-17T14:00:00" ;  # T4: Failure point
+    exec:dataPath "jobs" ;
+    exec:outputVariable "all_jobs" .
+
+# Step 4: Filter failed jobs
+exec:G1_FilterFailedJobs a exec:Action ;
+    rdfs:label "Filter Failed Jobs" ;
+    exec:actionType "FILTER" ;
+    exec:executionOrder 4 ;
+    exec:requiresInput exec:G1_QueryCoolingProducts ;
+    exec:requiresInput exec:G1_GetCoolingMachines ;
+    exec:requiresInput exec:G1_GetJobHistory ;
+    exec:filterCriteria """
+        job.status == 'FAILED' AND 
+        job.product IN cooling_products AND
+        job.machine IN cooling_machines
+    """ ;
+    exec:outputVariable "failed_cooling_jobs" .
+
+# Step 5: Generate report
+exec:G1_GenerateReport a exec:Action ;
+    rdfs:label "Generate Report" ;
+    exec:actionType "TRANSFORM" ;
+    exec:executionOrder 5 ;
+    exec:requiresInput exec:G1_FilterFailedJobs ;
+    exec:transformTemplate """
+        {
+            "failed_jobs": failed_cooling_jobs,
+            "summary": {
+                "total_failed": len(failed_cooling_jobs),
+                "date": parameters.date,
+                "cooling_related": true
+            }
+        }
+    """ ;
+    exec:outputVariable "final_report" .
+
+# ============================================
+# Goal 2: Detect Anomaly for Product
+# ============================================
+
+exec:DetectAnomalyForProduct a exec:Goal ;
+    rdfs:label "Detect Manufacturing Anomalies" ;
+    exec:hasAction exec:G2_GetProductHistory ;
+    exec:hasAction exec:G2_LoadSensorData ;
+    exec:hasAction exec:G2_QueryBaseline ;
+    exec:hasAction exec:G2_RunAnomalyDetection ;
+    exec:hasAction exec:G2_InterpretResults .
+
+# Step 1: Get product manufacturing history
+exec:G2_GetProductHistory a exec:Action ;
+    rdfs:label "Get Product History" ;
+    exec:actionType "AAS_API" ;
+    exec:executionOrder 1 ;
+    exec:dataSource exec:AASServer ;
+    exec:endpoint "/shells/Product-{product_id}/submodels/ManufacturingHistory" ;
+    exec:outputVariable "product_history" .
+
+# Step 2: Load sensor data from snapshot
+exec:G2_LoadSensorData a exec:Action ;
+    rdfs:label "Load Sensor Data" ;
+    exec:actionType "SNAPSHOT" ;
+    exec:executionOrder 2 ;
+    exec:dataSource exec:SnapshotStore ;
+    exec:snapshotTime "2025-07-17T12:00:00" ;  # T3: Warning signs
+    exec:dataPath "sensor_data" ;
+    exec:outputVariable "sensor_data" .
+
+# Step 3: Query normal baseline
+exec:G2_QueryBaseline a exec:Action ;
+    rdfs:label "Query Normal Baseline" ;
+    exec:actionType "SPARQL" ;
+    exec:executionOrder 3 ;
+    exec:dataSource exec:SPARQLEndpoint ;
+    exec:query """
+        PREFIX prod: <http://example.org/production#>
+        SELECT ?metric ?min ?max ?mean WHERE {
+            ?product prod:productId ?id ;
+                    prod:hasNormalPattern ?pattern .
+            ?pattern prod:metric ?metric ;
+                    prod:minValue ?min ;
+                    prod:maxValue ?max ;
+                    prod:meanValue ?mean .
+        }
+    """ ;
+    exec:outputVariable "baseline" .
+
+# Step 4: Run anomaly detection in container
+exec:G2_RunAnomalyDetection a exec:Action ;
+    rdfs:label "Run Anomaly Detection" ;
+    exec:actionType "CONTAINER" ;
+    exec:executionOrder 4 ;
+    exec:dataSource exec:DockerEngine ;
+    exec:containerImage "anomaly-detector:latest" ;
+    exec:requiresInput exec:G2_LoadSensorData ;
+    exec:requiresInput exec:G2_QueryBaseline ;
+    exec:inputMapping """
+        {
+            "sensor_data": sensor_data,
+            "baseline": baseline,
+            "threshold": 0.85
+        }
+    """ ;
+    exec:outputVariable "anomaly_results" .
+
+# Step 5: Interpret results
+exec:G2_InterpretResults a exec:Action ;
+    rdfs:label "Interpret Results" ;
+    exec:actionType "TRANSFORM" ;
+    exec:executionOrder 5 ;
+    exec:requiresInput exec:G2_RunAnomalyDetection ;
+    exec:outputVariable "anomaly_report" .
+
+# ============================================
+# Goal 3: Predict Completion Time
+# ============================================
+
+exec:PredictCompletionTime a exec:Goal ;
+    rdfs:label "Predict First Completion Time" ;
+    exec:hasAction exec:G3_GetJobTemplate ;
+    exec:hasAction exec:G3_CheckMachineSchedule ;
+    exec:hasAction exec:G3_AnalyzeHistory ;
+    exec:hasAction exec:G3_RunSimulation ;
+    exec:hasAction exec:G3_CalculatePrediction .
+
+# Step 1: Get job template
+exec:G3_GetJobTemplate a exec:Action ;
+    rdfs:label "Get Job Template" ;
+    exec:actionType "AAS_API" ;
+    exec:executionOrder 1 ;
+    exec:dataSource exec:AASServer ;
+    exec:endpoint "/shells/Product-{product_id}/submodels/JobTemplate" ;
+    exec:outputVariable "job_template" .
+
+# Step 2: Check machine schedule
+exec:G3_CheckMachineSchedule a exec:Action ;
+    rdfs:label "Check Machine Schedule" ;
+    exec:actionType "SNAPSHOT" ;
+    exec:executionOrder 2 ;
+    exec:dataSource exec:SnapshotStore ;
+    exec:snapshotTime "2025-07-17T10:00:00" ;  # T2: Current state
+    exec:dataPath "machines" ;
+    exec:outputVariable "machine_schedule" .
+
+# Step 3: Analyze historical performance
+exec:G3_AnalyzeHistory a exec:Action ;
+    rdfs:label "Analyze Historical Data" ;
+    exec:actionType "SPARQL" ;
+    exec:executionOrder 3 ;
+    exec:dataSource exec:SPARQLEndpoint ;
+    exec:query """
+        PREFIX prod: <http://example.org/production#>
+        SELECT ?operation (AVG(?duration) as ?avg_duration) WHERE {
+            ?job prod:hasOperation ?op .
+            ?op prod:operationType ?operation ;
+                prod:actualDuration ?duration .
+        }
+        GROUP BY ?operation
+    """ ;
+    exec:outputVariable "historical_stats" .
+
+# Step 4: Run simulation
+exec:G3_RunSimulation a exec:Action ;
+    rdfs:label "Run Production Simulation" ;
+    exec:actionType "CONTAINER" ;
+    exec:executionOrder 4 ;
+    exec:dataSource exec:DockerEngine ;
+    exec:containerImage "production-simulator:latest" ;
+    exec:requiresInput exec:G3_GetJobTemplate ;
+    exec:requiresInput exec:G3_CheckMachineSchedule ;
+    exec:requiresInput exec:G3_AnalyzeHistory ;
+    exec:inputMapping """
+        {
+            "job_template": job_template,
+            "machine_schedule": machine_schedule,
+            "historical_stats": historical_stats,
+            "quantity": parameters.quantity
+        }
+    """ ;
+    exec:outputVariable "simulation_results" .
+
+# Step 5: Calculate final prediction
+exec:G3_CalculatePrediction a exec:Action ;
+    rdfs:label "Calculate Prediction" ;
+    exec:actionType "TRANSFORM" ;
+    exec:executionOrder 5 ;
+    exec:requiresInput exec:G3_RunSimulation ;
+    exec:outputVariable "completion_prediction" .
+
+# ============================================
+# Goal 4: Track Product Position
+# ============================================
+
+exec:TrackProductPosition a exec:Goal ;
+    rdfs:label "Track Product Current Position" ;
+    exec:hasAction exec:G4_GetProductShell ;
+    exec:hasAction exec:G4_GetCurrentOperation ;
+    exec:hasAction exec:G4_QueryLocation ;
+    exec:hasAction exec:G4_CompileTracking ;
+    exec:hasAction exec:G4_FormatResponse .
+
+# Step 1: Get product shell
+exec:G4_GetProductShell a exec:Action ;
+    rdfs:label "Get Product Shell" ;
+    exec:actionType "AAS_API" ;
+    exec:executionOrder 1 ;
+    exec:dataSource exec:AASServer ;
+    exec:endpoint "/shells/Product-{product_id}" ;
+    exec:outputVariable "product_shell" .
+
+# Step 2: Get current operation from snapshot
+exec:G4_GetCurrentOperation a exec:Action ;
+    rdfs:label "Get Current Operation" ;
+    exec:actionType "SNAPSHOT" ;
+    exec:executionOrder 2 ;
+    exec:dataSource exec:SnapshotStore ;
+    exec:snapshotTime "2025-07-17T12:00:00" ;  # T3: Current position
+    exec:dataPath "jobs" ;
+    exec:filterBy "product_id" ;
+    exec:outputVariable "current_operation" .
+
+# Step 3: Query location information
+exec:G4_QueryLocation a exec:Action ;
+    rdfs:label "Query Location Info" ;
+    exec:actionType "SPARQL" ;
+    exec:executionOrder 3 ;
+    exec:dataSource exec:SPARQLEndpoint ;
+    exec:query """
+        PREFIX prod: <http://example.org/production#>
+        SELECT ?machine ?zone ?coordinates WHERE {
+            ?machine prod:machineId ?id ;
+                    prod:locatedIn ?zone ;
+                    prod:coordinates ?coordinates .
+        }
+    """ ;
+    exec:outputVariable "location_info" .
+
+# Step 4: Compile tracking data
+exec:G4_CompileTracking a exec:Action ;
+    rdfs:label "Compile Tracking Data" ;
+    exec:actionType "TRANSFORM" ;
+    exec:executionOrder 4 ;
+    exec:requiresInput exec:G4_GetProductShell ;
+    exec:requiresInput exec:G4_GetCurrentOperation ;
+    exec:requiresInput exec:G4_QueryLocation ;
+    exec:outputVariable "tracking_data" .
+
+# Step 5: Format response
+exec:G4_FormatResponse a exec:Action ;
+    rdfs:label "Format Response" ;
+    exec:actionType "TRANSFORM" ;
+    exec:executionOrder 5 ;
+    exec:requiresInput exec:G4_CompileTracking ;
+    exec:transformTemplate """
+        {
+            "product_id": parameters.product_id,
+            "current_position": tracking_data.location,
+            "status": tracking_data.operation_status,
+            "progress": tracking_data.progress_percentage,
+            "last_updated": tracking_data.timestamp
+        }
+    """ ;
+    exec:outputVariable "position_report" .

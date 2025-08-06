@@ -1,0 +1,57 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:3DP001:OperationalData",
+  "idShort": "OperationalData",
+  "semanticId": {
+    "type": "ExternalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "0173-1#02-AAV232#002"
+      }
+    ]
+  },
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "Status",
+      "value": "IDLE",
+      "valueType": "xs:string",
+      "timestamp": "2025-07-17T12:00:00"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "HealthScore",
+      "value": "88",
+      "valueType": "xs:integer"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Temperature",
+      "value": "22.0",
+      "valueType": "xs:float",
+      "unit": "°C"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "CoolantFlow",
+      "value": "0",
+      "valueType": "xs:float",
+      "unit": "L/min"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Pressure",
+      "value": "1.0",
+      "valueType": "xs:float",
+      "unit": "bar"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Vibration",
+      "value": "0.5",
+      "valueType": "xs:float",
+      "unit": "mm/s"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:CNC002:JobHistory",
+  "idShort": "JobHistory",
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "JOB-001",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "ProductId",
+          "value": "Product-B1",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Status",
+          "value": "FAILED",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Progress",
+          "value": "65",
+          "valueType": "xs:integer"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "StartTime",
+          "value": "2025-07-17T08:00:00",
+          "valueType": "xs:dateTime"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "FailureReason",
+          "value": "cooling_system_error",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ErrorDetails",
+          "value": "Temperature exceeded critical threshold",
+          "valueType": "xs:string"
+        }
+      ]
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "JOB-003",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "ProductId",
+          "value": "Product-B1",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Status",
+          "value": "FAILED",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Progress",
+          "value": "45",
+          "valueType": "xs:integer"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "StartTime",
+          "value": "2025-07-17T10:00:00",
+          "valueType": "xs:dateTime"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "FailureReason",
+          "value": "coolant_flow_insufficient",
+          "valueType": "xs:string"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ErrorDetails",
+          "value": "Coolant flow rate below minimum",
+          "valueType": "xs:string"
+        }
+      ]
+    }
+  ]
+}

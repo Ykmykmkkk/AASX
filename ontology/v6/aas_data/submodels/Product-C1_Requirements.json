@@ -1,0 +1,27 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:Product-C1:Requirements",
+  "idShort": "Requirements",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "RequiresCooling",
+      "value": "true",
+      "valueType": "xs:boolean"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "MinTemperature",
+      "value": "18",
+      "valueType": "xs:float",
+      "unit": "°C"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "MaxTemperature",
+      "value": "23",
+      "valueType": "xs:float",
+      "unit": "°C"
+    }
+  ]
+}

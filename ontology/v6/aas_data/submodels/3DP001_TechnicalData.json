@@ -1,0 +1,31 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:3DP001:TechnicalData",
+  "idShort": "TechnicalData",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "MachineType",
+      "value": "3D_PRINTER",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "CoolingRequired",
+      "value": "false",
+      "valueType": "xs:boolean"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Zone",
+      "value": "Zone-C",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "Coordinates",
+      "value": "40.0,30.0,0",
+      "valueType": "xs:string"
+    }
+  ]
+}

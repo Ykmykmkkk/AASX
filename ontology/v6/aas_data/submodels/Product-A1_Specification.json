@@ -1,0 +1,20 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:sm:Product-A1:Specification",
+  "idShort": "Specification",
+  "submodelElements": [
+    {
+      "modelType": "Property",
+      "idShort": "ProductName",
+      "value": "Precision Gear",
+      "valueType": "xs:string"
+    },
+    {
+      "modelType": "Property",
+      "idShort": "CriticalTemperature",
+      "value": "45",
+      "valueType": "xs:float",
+      "unit": "°C"
+    }
+  ]
+}
