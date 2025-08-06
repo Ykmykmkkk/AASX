@@ -1,0 +1,61 @@
+{
+  "modelType": "AssetAdministrationShell",
+  "id": "urn:aas:Machine:CNC003",
+  "idShort": "CNC003",
+  "assetInformation": {
+    "assetKind": "Instance",
+    "globalAssetId": "https://example.com/machines/MAZAK-VI700-2024-003",
+    "specificAssetIds": [
+      {
+        "name": "SerialNumber",
+        "value": "MAZAK-VI700-2024-003"
+      },
+      {
+        "name": "ManufacturerID",
+        "value": "YAMAZAKI_MAZAK"
+      }
+    ]
+  },
+  "administration": {
+    "version": "1",
+    "revision": "0"
+  },
+  "submodels": [
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:Nameplate:CNC003"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:TechnicalData:CNC003"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:OperationalData:CNC003"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:Documentation:CNC003"
+        }
+      ]
+    }
+  ]
+}

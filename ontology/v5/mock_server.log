@@ -1,0 +1,213 @@
+2025-08-05 18:16:25,563 - __main__ - INFO - Loading mock data...
+2025-08-05 18:16:25,563 - __main__ - INFO - Loaded shell: Product-C1
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded shell: 3DP001
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded shell: Product-A1
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded shell: CNC002
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded shell: CNC003
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded shell: Product-B1
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded shell: ASM001
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded shell: Product-D1
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded shell: CNC001
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:25,564 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:25,565 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:25,565 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:25,565 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:25,565 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:25,565 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:25,565 - __main__ - INFO - Loaded submodel: ProductSpecification
+2025-08-05 18:16:25,565 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:25,565 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: ManufacturingRequirements
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: ProductSpecification
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: ManufacturingRequirements
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: ProductSpecification
+2025-08-05 18:16:25,566 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:25,567 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:25,567 - __main__ - INFO - Loaded submodel: ManufacturingRequirements
+2025-08-05 18:16:25,567 - __main__ - INFO - Loaded submodel: ManufacturingRequirements
+2025-08-05 18:16:25,567 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:25,567 - __main__ - INFO - Loaded submodel: ProductSpecification
+2025-08-05 18:16:25,567 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:25,567 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:25,567 - __main__ - INFO - Loaded 5 job history records
+2025-08-05 18:16:25,567 - __main__ - INFO - Total: 9 shells, 28 submodels, 5 jobs
+2025-08-05 18:16:25,567 - __main__ - INFO - Mock AAS Server v2 initialized successfully
+2025-08-05 18:16:25,567 - __main__ - INFO - Starting Mock AAS Server v2 on http://localhost:5001
+ * Serving Flask app 'mock_server_v2'
+ * Debug mode: off
+2025-08-05 18:16:25,575 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.8.0.6:5001
+2025-08-05 18:16:25,575 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-05 18:16:26,442 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /health HTTP/1.1" 200 -
+2025-08-05 18:16:26,675 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /health HTTP/1.1" 200 -
+2025-08-05 18:16:26,677 - __main__ - INFO - GET /shells - returning 9 shells
+2025-08-05 18:16:26,678 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells HTTP/1.1" 200 -
+2025-08-05 18:16:26,679 - __main__ - WARNING - GET /shells/dXJuOmFhczpNYWNoaW5lOkRNR01PUkktRE1VNTAtMjAyNC0wMDE - not found
+2025-08-05 18:16:26,680 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "[33mGET /shells/dXJuOmFhczpNYWNoaW5lOkRNR01PUkktRE1VNTAtMjAyNC0wMDE HTTP/1.1[0m" 404 -
+2025-08-05 18:16:26,682 - __main__ - INFO - GET /api/machines/cooling-required - returning 2 machines
+2025-08-05 18:16:26,682 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /api/machines/cooling-required HTTP/1.1" 200 -
+2025-08-05 18:16:26,683 - __main__ - INFO - GET /api/products/cooling-required - returning 2 products
+2025-08-05 18:16:26,683 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /api/products/cooling-required HTTP/1.1" 200 -
+2025-08-05 18:16:26,685 - __main__ - INFO - GET /api/jobs/failed - returning 3 jobs
+2025-08-05 18:16:26,685 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /api/jobs/failed?date=2025-07-17 HTTP/1.1" 200 -
+2025-08-05 18:16:26,706 - __main__ - INFO - GET /shells - returning 9 shells
+2025-08-05 18:16:26,706 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells HTTP/1.1" 200 -
+2025-08-05 18:16:26,708 - __main__ - INFO - GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQzE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQzE - found
+2025-08-05 18:16:26,708 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQzE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQzE HTTP/1.1" 200 -
+2025-08-05 18:16:26,710 - __main__ - INFO - GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQTE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQTE - found
+2025-08-05 18:16:26,710 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQTE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQTE HTTP/1.1" 200 -
+2025-08-05 18:16:26,712 - __main__ - INFO - GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQjE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQjE - found
+2025-08-05 18:16:26,712 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQjE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQjE HTTP/1.1" 200 -
+2025-08-05 18:16:26,713 - __main__ - INFO - GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtRDE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtRDE - found
+2025-08-05 18:16:26,714 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtRDE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtRDE HTTP/1.1" 200 -
+2025-08-05 18:16:26,715 - __main__ - INFO - GET /shells - returning 9 shells
+2025-08-05 18:16:26,715 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells HTTP/1.1" 200 -
+2025-08-05 18:16:26,716 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOjNEUDAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOjNEUDAwMQ - found
+2025-08-05 18:16:26,717 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOjNEUDAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOjNEUDAwMQ HTTP/1.1" 200 -
+2025-08-05 18:16:26,718 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMg - found
+2025-08-05 18:16:26,718 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMg HTTP/1.1" 200 -
+2025-08-05 18:16:26,720 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMw - found
+2025-08-05 18:16:26,720 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMw HTTP/1.1" 200 -
+2025-08-05 18:16:26,721 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkFTTTAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkFTTTAwMQ - found
+2025-08-05 18:16:26,722 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkFTTTAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkFTTTAwMQ HTTP/1.1" 200 -
+2025-08-05 18:16:26,723 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMQ - found
+2025-08-05 18:16:26,723 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMQ HTTP/1.1" 200 -
+2025-08-05 18:16:26,725 - __main__ - INFO - GET /shells - returning 9 shells
+2025-08-05 18:16:26,725 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells HTTP/1.1" 200 -
+2025-08-05 18:16:26,726 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOjNEUDAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6M0RQMDAx - found
+2025-08-05 18:16:26,726 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOjNEUDAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6M0RQMDAx HTTP/1.1" 200 -
+2025-08-05 18:16:26,728 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAy - found
+2025-08-05 18:16:26,728 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAy HTTP/1.1" 200 -
+2025-08-05 18:16:26,730 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAz - found
+2025-08-05 18:16:26,730 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAz HTTP/1.1" 200 -
+2025-08-05 18:16:26,731 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkFTTTAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6QVNNMDAx - found
+2025-08-05 18:16:26,731 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkFTTTAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6QVNNMDAx HTTP/1.1" 200 -
+2025-08-05 18:16:26,733 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAx - found
+2025-08-05 18:16:26,733 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAx HTTP/1.1" 200 -
+2025-08-05 18:16:26,748 - __main__ - INFO - GET /api/product/Product-B1/location - found at CNC002
+2025-08-05 18:16:26,748 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /api/product/Product-B1/location HTTP/1.1" 200 -
+2025-08-05 18:16:26,749 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg - found
+2025-08-05 18:16:26,749 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg HTTP/1.1" 200 -
+2025-08-05 18:16:26,751 - __main__ - INFO - GET /api/product/Product-C1/location - found at CNC001
+2025-08-05 18:16:26,751 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /api/product/Product-C1/location HTTP/1.1" 200 -
+2025-08-05 18:16:26,752 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ - found
+2025-08-05 18:16:26,752 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ HTTP/1.1" 200 -
+2025-08-05 18:16:26,754 - __main__ - INFO - GET /api/product/Product-A1/location - found at CNC003
+2025-08-05 18:16:26,754 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /api/product/Product-A1/location HTTP/1.1" 200 -
+2025-08-05 18:16:26,755 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw - found
+2025-08-05 18:16:26,755 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:26] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw HTTP/1.1" 200 -
+2025-08-05 18:16:32,750 - __main__ - INFO - Loading mock data...
+2025-08-05 18:16:32,750 - __main__ - INFO - Loaded shell: Product-C1
+2025-08-05 18:16:32,750 - __main__ - INFO - Loaded shell: 3DP001
+2025-08-05 18:16:32,750 - __main__ - INFO - Loaded shell: Product-A1
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded shell: CNC002
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded shell: CNC003
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded shell: Product-B1
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded shell: ASM001
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded shell: Product-D1
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded shell: CNC001
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:32,751 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: ProductSpecification
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: ManufacturingRequirements
+2025-08-05 18:16:32,752 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: ProductSpecification
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: ManufacturingRequirements
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: ProductSpecification
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: Nameplate
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: ManufacturingRequirements
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: ManufacturingRequirements
+2025-08-05 18:16:32,753 - __main__ - INFO - Loaded submodel: TechnicalData
+2025-08-05 18:16:32,754 - __main__ - INFO - Loaded submodel: ProductSpecification
+2025-08-05 18:16:32,754 - __main__ - INFO - Loaded submodel: OperationalData
+2025-08-05 18:16:32,754 - __main__ - INFO - Loaded submodel: Documentation
+2025-08-05 18:16:32,754 - __main__ - INFO - Loaded 5 job history records
+2025-08-05 18:16:32,754 - __main__ - INFO - Total: 9 shells, 28 submodels, 5 jobs
+2025-08-05 18:16:32,754 - __main__ - INFO - Mock AAS Server v2 initialized successfully
+2025-08-05 18:16:32,754 - __main__ - INFO - Starting Mock AAS Server v2 on http://localhost:5001
+2025-08-05 18:16:32,762 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.8.0.6:5001
+2025-08-05 18:16:32,762 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-05 18:16:54,607 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /health HTTP/1.1" 200 -
+2025-08-05 18:16:54,837 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /health HTTP/1.1" 200 -
+2025-08-05 18:16:54,839 - __main__ - INFO - GET /shells - returning 9 shells
+2025-08-05 18:16:54,840 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells HTTP/1.1" 200 -
+2025-08-05 18:16:54,841 - __main__ - WARNING - GET /shells/dXJuOmFhczpNYWNoaW5lOkRNR01PUkktRE1VNTAtMjAyNC0wMDE - not found
+2025-08-05 18:16:54,842 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "[33mGET /shells/dXJuOmFhczpNYWNoaW5lOkRNR01PUkktRE1VNTAtMjAyNC0wMDE HTTP/1.1[0m" 404 -
+2025-08-05 18:16:54,843 - __main__ - INFO - GET /api/machines/cooling-required - returning 2 machines
+2025-08-05 18:16:54,843 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /api/machines/cooling-required HTTP/1.1" 200 -
+2025-08-05 18:16:54,845 - __main__ - INFO - GET /api/products/cooling-required - returning 2 products
+2025-08-05 18:16:54,845 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /api/products/cooling-required HTTP/1.1" 200 -
+2025-08-05 18:16:54,847 - __main__ - INFO - GET /api/jobs/failed - returning 3 jobs
+2025-08-05 18:16:54,847 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /api/jobs/failed?date=2025-07-17 HTTP/1.1" 200 -
+2025-08-05 18:16:54,869 - __main__ - INFO - GET /shells - returning 9 shells
+2025-08-05 18:16:54,869 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells HTTP/1.1" 200 -
+2025-08-05 18:16:54,871 - __main__ - INFO - GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQzE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQzE - found
+2025-08-05 18:16:54,871 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQzE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQzE HTTP/1.1" 200 -
+2025-08-05 18:16:54,872 - __main__ - INFO - GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQTE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQTE - found
+2025-08-05 18:16:54,873 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQTE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQTE HTTP/1.1" 200 -
+2025-08-05 18:16:54,874 - __main__ - INFO - GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQjE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQjE - found
+2025-08-05 18:16:54,874 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtQjE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtQjE HTTP/1.1" 200 -
+2025-08-05 18:16:54,876 - __main__ - INFO - GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtRDE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtRDE - found
+2025-08-05 18:16:54,876 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpQcm9kdWN0OlByb2R1Y3QtRDE/submodels/dXJuOmFhczpNYW51ZmFjdHVyaW5nUmVxdWlyZW1lbnRzOlByb2R1Y3QtRDE HTTP/1.1" 200 -
+2025-08-05 18:16:54,877 - __main__ - INFO - GET /shells - returning 9 shells
+2025-08-05 18:16:54,878 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells HTTP/1.1" 200 -
+2025-08-05 18:16:54,879 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOjNEUDAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOjNEUDAwMQ - found
+2025-08-05 18:16:54,879 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOjNEUDAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOjNEUDAwMQ HTTP/1.1" 200 -
+2025-08-05 18:16:54,881 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMg - found
+2025-08-05 18:16:54,881 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMg HTTP/1.1" 200 -
+2025-08-05 18:16:54,882 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMw - found
+2025-08-05 18:16:54,882 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMw HTTP/1.1" 200 -
+2025-08-05 18:16:54,884 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkFTTTAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkFTTTAwMQ - found
+2025-08-05 18:16:54,884 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkFTTTAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkFTTTAwMQ HTTP/1.1" 200 -
+2025-08-05 18:16:54,885 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMQ - found
+2025-08-05 18:16:54,885 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ/submodels/dXJuOmFhczpUZWNobmljYWxEYXRhOkNOQzAwMQ HTTP/1.1" 200 -
+2025-08-05 18:16:54,887 - __main__ - INFO - GET /shells - returning 9 shells
+2025-08-05 18:16:54,887 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells HTTP/1.1" 200 -
+2025-08-05 18:16:54,888 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOjNEUDAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6M0RQMDAx - found
+2025-08-05 18:16:54,888 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOjNEUDAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6M0RQMDAx HTTP/1.1" 200 -
+2025-08-05 18:16:54,891 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAy - found
+2025-08-05 18:16:54,891 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAy HTTP/1.1" 200 -
+2025-08-05 18:16:54,892 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAz - found
+2025-08-05 18:16:54,892 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAz HTTP/1.1" 200 -
+2025-08-05 18:16:54,895 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkFTTTAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6QVNNMDAx - found
+2025-08-05 18:16:54,895 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkFTTTAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6QVNNMDAx HTTP/1.1" 200 -
+2025-08-05 18:16:54,897 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAx - found
+2025-08-05 18:16:54,897 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ/submodels/dXJuOmFhczpPcGVyYXRpb25hbERhdGE6Q05DMDAx HTTP/1.1" 200 -
+2025-08-05 18:16:54,913 - __main__ - INFO - GET /api/product/Product-B1/location - found at CNC002
+2025-08-05 18:16:54,913 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /api/product/Product-B1/location HTTP/1.1" 200 -
+2025-08-05 18:16:54,914 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg - found
+2025-08-05 18:16:54,915 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMg HTTP/1.1" 200 -
+2025-08-05 18:16:54,916 - __main__ - INFO - GET /api/product/Product-C1/location - found at CNC001
+2025-08-05 18:16:54,916 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /api/product/Product-C1/location HTTP/1.1" 200 -
+2025-08-05 18:16:54,918 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ - found
+2025-08-05 18:16:54,918 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMQ HTTP/1.1" 200 -
+2025-08-05 18:16:54,919 - __main__ - INFO - GET /api/product/Product-A1/location - found at CNC003
+2025-08-05 18:16:54,919 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /api/product/Product-A1/location HTTP/1.1" 200 -
+2025-08-05 18:16:54,921 - __main__ - INFO - GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw - found
+2025-08-05 18:16:54,921 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "GET /shells/dXJuOmFhczpNYWNoaW5lOkNOQzAwMw HTTP/1.1" 200 -
+2025-08-05 18:16:54,936 - werkzeug - INFO - 127.0.0.1 - - [05/Aug/2025 18:16:54] "[33mGET /api/product/Product-X99/location HTTP/1.1[0m" 404 -

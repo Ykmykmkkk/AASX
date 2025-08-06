@@ -1,0 +1,61 @@
+{
+  "modelType": "AssetAdministrationShell",
+  "id": "urn:aas:Machine:CNC001",
+  "idShort": "CNC001",
+  "assetInformation": {
+    "assetKind": "Instance",
+    "globalAssetId": "https://example.com/machines/DMGMORI-DMU50-2024-001",
+    "specificAssetIds": [
+      {
+        "name": "SerialNumber",
+        "value": "DMGMORI-DMU50-2024-001"
+      },
+      {
+        "name": "ManufacturerID",
+        "value": "DMG_MORI"
+      }
+    ]
+  },
+  "administration": {
+    "version": "1",
+    "revision": "0"
+  },
+  "submodels": [
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:Nameplate:CNC001"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:TechnicalData:CNC001"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:OperationalData:CNC001"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:Documentation:CNC001"
+        }
+      ]
+    }
+  ]
+}

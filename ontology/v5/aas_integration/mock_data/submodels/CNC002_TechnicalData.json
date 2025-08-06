@@ -1,0 +1,288 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:TechnicalData:CNC002",
+  "idShort": "TechnicalData",
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "GeneralTechnicalProperties",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "PowerConsumption",
+          "valueType": "xs:decimal",
+          "value": "20.0",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAD001#001"
+              }
+            ]
+          },
+          "description": [
+            {
+              "language": "en",
+              "text": "Power consumption in kW"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "Weight",
+          "valueType": "xs:decimal",
+          "value": "4200",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAS627#002"
+              }
+            ]
+          },
+          "description": [
+            {
+              "language": "en",
+              "text": "Weight in kg"
+            }
+          ]
+        },
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Dimensions",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "Length",
+              "valueType": "xs:decimal",
+              "value": "2438",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAB713#005"
+                  }
+                ]
+              },
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Length in mm"
+                }
+              ]
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Width",
+              "valueType": "xs:decimal",
+              "value": "2159",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAB714#005"
+                  }
+                ]
+              },
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Width in mm"
+                }
+              ]
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Height",
+              "valueType": "xs:decimal",
+              "value": "2769",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAB715#005"
+                  }
+                ]
+              },
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Height in mm"
+                }
+              ]
+            }
+          ],
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#01-AFZ621#001"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "OperatingConditions",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "MinimumTemperature",
+              "valueType": "xs:decimal",
+              "value": "10",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAZ672#001"
+                  }
+                ]
+              },
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Minimum operating temperature in \u00b0C"
+                }
+              ]
+            },
+            {
+              "modelType": "Property",
+              "idShort": "MaximumTemperature",
+              "valueType": "xs:decimal",
+              "value": "40",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAZ673#001"
+                  }
+                ]
+              },
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Maximum operating temperature in \u00b0C"
+                }
+              ]
+            },
+            {
+              "modelType": "Property",
+              "idShort": "MaximumHumidity",
+              "valueType": "xs:decimal",
+              "value": "75",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAZ674#001"
+                  }
+                ]
+              },
+              "description": [
+                {
+                  "language": "en",
+                  "text": "Maximum humidity in %"
+                }
+              ]
+            }
+          ],
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#01-AFZ622#001"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "requires_cooling_during_production",
+          "valueType": "xs:boolean",
+          "value": "true",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAZ675#001"
+              }
+            ]
+          },
+          "description": [
+            {
+              "language": "en",
+              "text": "Requires cooling during production"
+            }
+          ]
+        }
+      ],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AFZ624#001"
+          }
+        ]
+      }
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "TechnicalSpecifications",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "MachinePrecision",
+          "valueType": "xs:string",
+          "value": "\u00b10.001mm"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "MaxSpindleSpeed",
+          "valueType": "xs:string",
+          "value": "10000 RPM"
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ToolCapacity",
+          "valueType": "xs:string",
+          "value": "40 tools"
+        }
+      ],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AFZ625#001"
+          }
+        ]
+      }
+    }
+  ],
+  "semanticId": {
+    "type": "GlobalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "0173-1#01-AFZ615#003"
+      }
+    ]
+  },
+  "administration": {
+    "version": "1",
+    "revision": "0"
+  }
+}

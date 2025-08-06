@@ -1,0 +1,84 @@
+@prefix bridge: <http://example.org/bridge-ontology#> .
+@prefix exec: <http://example.org/execution-ontology#> .
+@prefix prod: <http://example.org/production-domain#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== Fallback Strategy Extension =====
+
+bridge:FallbackStrategy rdf:type owl:Class ;
+    rdfs:comment "Strategy to use when primary data source is unavailable" .
+
+bridge:hasMockEndpoint rdf:type owl:DatatypeProperty ;
+    rdfs:domain bridge:FallbackStrategy ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Mock server endpoint URL" .
+
+bridge:hasDataPath rdf:type owl:DatatypeProperty ;
+    rdfs:domain bridge:FallbackStrategy ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Path to local data files" .
+
+bridge:hasSparqlEndpoint rdf:type owl:DatatypeProperty ;
+    rdfs:domain bridge:FallbackStrategy ;
+    rdfs:range xsd:string ;
+    rdfs:comment "SPARQL endpoint for RDF queries" .
+
+# Fallback Strategy Instances
+bridge:USE_MOCK_SERVER rdf:type bridge:FallbackStrategy ;
+    rdfs:label "Use Mock Server" ;
+    bridge:hasMockEndpoint "http://localhost:5002" ;
+    rdfs:comment "Fallback to mock AAS server" .
+
+bridge:USE_TTL_DATA rdf:type bridge:FallbackStrategy ;
+    rdfs:label "Use TTL Data" ;
+    bridge:hasDataPath "./aas-test-data/sparql-data" ;
+    rdfs:comment "Fallback to local TTL files" .
+
+bridge:QUERY_LOCAL_RDF rdf:type bridge:FallbackStrategy ;
+    rdfs:label "Query Local RDF" ;
+    bridge:hasSparqlEndpoint "http://localhost:3030/aas/query" ;
+    rdfs:comment "Fallback to local RDF triple store" .
+
+# Response Mapping Functions
+bridge:ResponseMapping rdf:type owl:Class ;
+    rdfs:comment "Mapping function for API responses" .
+
+bridge:map_shells_to_aas_list rdf:type bridge:ResponseMapping ;
+    rdfs:label "Map Shells to AAS List" ;
+    rdfs:comment "Convert AAS shell responses to internal format" .
+
+bridge:extract_job_history rdf:type bridge:ResponseMapping ;
+    rdfs:label "Extract Job History" ;
+    rdfs:comment "Extract job history from submodel elements" .
+
+bridge:extract_location_info rdf:type bridge:ResponseMapping ;
+    rdfs:label "Extract Location Info" ;
+    rdfs:comment "Extract current location from submodel" .
+
+# AAS Server Configuration
+bridge:AASServerConfig rdf:type owl:Class ;
+    rdfs:comment "Configuration for AAS server connection" .
+
+bridge:hasBaseUrl rdf:type owl:DatatypeProperty ;
+    rdfs:domain bridge:AASServerConfig ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Base URL of AAS server" .
+
+bridge:hasTimeout rdf:type owl:DatatypeProperty ;
+    rdfs:domain bridge:AASServerConfig ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Request timeout in seconds" .
+
+# Default Configuration
+bridge:DefaultAASConfig rdf:type bridge:AASServerConfig ;
+    bridge:hasBaseUrl "http://localhost:5001" ;
+    bridge:hasTimeout 30 ;
+    rdfs:comment "Default AAS server configuration" .
+
+bridge:DemoAASConfig rdf:type bridge:AASServerConfig ;
+    bridge:hasBaseUrl "https://v3.admin-shell-io.com" ;
+    bridge:hasTimeout 60 ;
+    rdfs:comment "Demo AAS server configuration" .

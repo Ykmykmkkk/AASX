@@ -1,0 +1,156 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:Nameplate:3DP001",
+  "idShort": "Nameplate",
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "ManufacturerInformation",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "ManufacturerName",
+          "valueType": "xs:string",
+          "value": "Stratasys",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAO677#002"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ManufacturerProductDesignation",
+          "valueType": "xs:string",
+          "value": "Stratasys F370",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAW338#001"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ManufacturerArticleNumber",
+          "valueType": "xs:string",
+          "value": "F370",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAO676#003"
+              }
+            ]
+          }
+        }
+      ],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AGJ678#001"
+          }
+        ]
+      }
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "ProductInformation",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "SerialNumber",
+          "valueType": "xs:string",
+          "value": "STRAT-F370-2024-001",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAM556#002"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "YearOfConstruction",
+          "valueType": "xs:string",
+          "value": "2024",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAP906#001"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "HardwareVersion",
+          "valueType": "xs:string",
+          "value": "1.0",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAN270#002"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "SoftwareVersion",
+          "valueType": "xs:string",
+          "value": "3.2.1",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAN737#002"
+              }
+            ]
+          }
+        }
+      ],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AGJ679#001"
+          }
+        ]
+      }
+    }
+  ],
+  "semanticId": {
+    "type": "GlobalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "0173-1#01-AGJ677#002"
+      }
+    ]
+  },
+  "administration": {
+    "version": "1",
+    "revision": "0"
+  }
+}

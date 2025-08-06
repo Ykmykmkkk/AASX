@@ -1,0 +1,72 @@
+@prefix prod: <http://example.org/production-domain#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== Job History for 2025-07-18 =====
+# 추가 테스트 데이터
+
+# Failed Cooling Jobs (Goal 1 테스트용)
+prod:Job-3001
+    rdf:type prod:Job ;
+    prod:forProduct prod:Product-A2 ;
+    prod:executedOn prod:CoolingMachine-03 ;
+    prod:hasStatus "Failed" ;
+    prod:priority "High" ;
+    prod:hasStartTime "2025-07-18T09:00:00"^^xsd:dateTime ;
+    prod:hasEndTime "2025-07-18T09:45:00"^^xsd:dateTime ;
+    prod:duration "45"^^xsd:integer ;
+    prod:requiresCooling true ;
+    prod:requiresAssembly true ;
+    prod:hasExecutionResult [
+        rdf:type prod:ExecutionResult ;
+        prod:hasErrorCode "COOL_FAIL" ;
+        prod:hasErrorDescription "Cooling system malfunction" ;
+        prod:hasErrorTime "2025-07-18T09:45:00"^^xsd:dateTime ;
+        prod:severity "Critical"
+    ] .
+
+# Successful Cooling Job
+prod:Job-3002
+    rdf:type prod:Job ;
+    prod:forProduct prod:Product-B1 ;
+    prod:executedOn prod:CoolingMachine-01 ;
+    prod:hasStatus "Success" ;
+    prod:priority "Medium" ;
+    prod:hasStartTime "2025-07-18T10:00:00"^^xsd:dateTime ;
+    prod:hasEndTime "2025-07-18T10:30:00"^^xsd:dateTime ;
+    prod:duration "30"^^xsd:integer ;
+    prod:requiresCooling true ;
+    prod:requiresHeating true .
+
+# Processing Job (Goal 4 테스트용)
+prod:Job-3003
+    rdf:type prod:Job ;
+    prod:forProduct prod:Product-D1 ;
+    prod:executedOn prod:AssemblyMachine-02 ;
+    prod:hasStatus "Processing" ;
+    prod:priority "High" ;
+    prod:hasStartTime "2025-07-18T14:00:00"^^xsd:dateTime ;
+    prod:currentOperationIndex "3"^^xsd:integer ;
+    prod:requiresAssembly true ;
+    prod:requiresCutting true .
+
+# Failed Non-Cooling Job
+prod:Job-3004
+    rdf:type prod:Job ;
+    prod:forProduct prod:Product-C2 ;
+    prod:executedOn prod:WeldingMachine-02 ;
+    prod:hasStatus "Failed" ;
+    prod:priority "Low" ;
+    prod:hasStartTime "2025-07-18T15:30:00"^^xsd:dateTime ;
+    prod:hasEndTime "2025-07-18T16:15:00"^^xsd:dateTime ;
+    prod:duration "45"^^xsd:integer ;
+    prod:requiresWelding true ;
+    prod:requiresHeating true ;
+    prod:hasExecutionResult [
+        rdf:type prod:ExecutionResult ;
+        prod:hasErrorCode "WELD_TEMP" ;
+        prod:hasErrorDescription "Welding temperature out of range" ;
+        prod:hasErrorTime "2025-07-18T16:15:00"^^xsd:dateTime ;
+        prod:severity "Medium"
+    ] .

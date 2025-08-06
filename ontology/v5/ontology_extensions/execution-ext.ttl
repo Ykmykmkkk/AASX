@@ -1,0 +1,114 @@
+@prefix exec: <http://example.org/execution-ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== AAS Integration Extension =====
+
+# New Properties for AAS Integration
+exec:hasHttpMethod rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "HTTP method for REST API calls (GET, POST, etc.)" .
+
+exec:hasFallbackStrategy rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Fallback strategy when API call fails" .
+
+exec:hasResponseMapping rdf:type owl:DatatypeProperty ;
+    rdfs:domain exec:Action ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Mapping rules for API response to internal format" .
+
+# Extended Actions for Goal 1 - Query Failed Jobs with Cooling
+exec:GetCoolingProducts rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 ;
+    exec:hasOutputName "coolingProducts" ;
+    exec:hasQueryTemplate """
+        PREFIX prod: <http://example.org/production-domain#>
+        SELECT ?product ?productId WHERE {
+            ?product a prod:Product ;
+                    prod:productId ?productId ;
+                    prod:requiresCooling true .
+        }
+    """ ;
+    exec:hasFallbackStrategy "USE_TTL_DATA" .
+
+exec:GetProductAAS rdf:type exec:AASConnector ;
+    exec:actionType exec:AASGet ;
+    exec:executionOrder 2 ;
+    exec:requiresInput exec:GetCoolingProducts ;
+    exec:hasOutputName "productAASList" ;
+    exec:hasEndpointTemplate "{base_url}/shells?assetIds={product_id}" ;
+    exec:hasHttpMethod "GET" ;
+    exec:hasFallbackStrategy "USE_MOCK_SERVER" ;
+    exec:hasResponseMapping "map_shells_to_aas_list" .
+
+exec:GetJobHistory rdf:type exec:AASConnector ;
+    exec:actionType exec:AASGet ;
+    exec:executionOrder 3 ;
+    exec:requiresInput exec:GetProductAAS ;
+    exec:hasOutputName "jobHistoryData" ;
+    exec:hasEndpointTemplate "{base_url}/shells/{aas_id}/submodels/{submodel_id}/submodel-elements/JobHistory" ;
+    exec:hasHttpMethod "GET" ;
+    exec:hasFallbackStrategy "QUERY_LOCAL_RDF" ;
+    exec:hasResponseMapping "extract_job_history" .
+
+exec:FilterFailedJobs rdf:type exec:DataEnricher ;
+    exec:actionType exec:DataTransform ;
+    exec:executionOrder 4 ;
+    exec:requiresInput exec:GetJobHistory ;
+    exec:hasOutputName "failedCoolingJobs" ;
+    exec:hasEnrichmentType "filter_by_status_and_date" .
+
+# Extended Actions for Goal 4 - Track Product Position
+exec:GetProductIdentifier rdf:type exec:QueryBuilder ;
+    exec:actionType exec:SPARQLQuery ;
+    exec:executionOrder 1 ;
+    exec:hasOutputName "productInfo" ;
+    exec:hasQueryTemplate """
+        PREFIX prod: <http://example.org/production-domain#>
+        SELECT ?product ?aasId WHERE {
+            ?product a prod:Product ;
+                    prod:productId ?productId ;
+                    prod:hasAASIdentifier ?aasId .
+            FILTER(?productId = "%%PRODUCT_ID%%")
+        }
+    """ ;
+    exec:hasFallbackStrategy "USE_TTL_DATA" .
+
+exec:GetProductShell rdf:type exec:AASConnector ;
+    exec:actionType exec:AASGet ;
+    exec:executionOrder 2 ;
+    exec:requiresInput exec:GetProductIdentifier ;
+    exec:hasOutputName "productShell" ;
+    exec:hasEndpointTemplate "{base_url}/shells/{aas_id}" ;
+    exec:hasHttpMethod "GET" ;
+    exec:hasFallbackStrategy "USE_MOCK_SERVER" .
+
+exec:GetLocationSubmodel rdf:type exec:AASConnector ;
+    exec:actionType exec:AASGet ;
+    exec:executionOrder 3 ;
+    exec:requiresInput exec:GetProductShell ;
+    exec:hasOutputName "locationData" ;
+    exec:hasEndpointTemplate "{base_url}/shells/{aas_id}/submodels/{location_submodel_id}/submodel-elements/CurrentLocation" ;
+    exec:hasHttpMethod "GET" ;
+    exec:hasFallbackStrategy "QUERY_LOCAL_RDF" ;
+    exec:hasResponseMapping "extract_location_info" .
+
+# Goal Definitions with Actions
+exec:QueryFailedCoolingJobs rdf:type exec:QueryGoal ;
+    exec:requiresAction exec:GetCoolingProducts ;
+    exec:requiresAction exec:GetProductAAS ;
+    exec:requiresAction exec:GetJobHistory ;
+    exec:requiresAction exec:FilterFailedJobs ;
+    exec:hasResultType exec:JobReport .
+
+exec:TrackProductLocation rdf:type exec:QueryGoal ;
+    exec:requiresAction exec:GetProductIdentifier ;
+    exec:requiresAction exec:GetProductShell ;
+    exec:requiresAction exec:GetLocationSubmodel ;
+    exec:hasResultType exec:ProductLocationReport .

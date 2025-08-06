@@ -1,0 +1,83 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:ManufacturingRequirements:Product-B1",
+  "idShort": "ManufacturingRequirements",
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "ProcessRequirements",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "requires_cooling_during_production",
+          "valueType": "xs:boolean",
+          "value": "true",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAO745#001"
+              }
+            ]
+          },
+          "description": [
+            {
+              "language": "en",
+              "text": "Requires cooling during production"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "StandardBatchSize",
+          "valueType": "xs:integer",
+          "value": "50",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAO746#001"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "CoolingMethod",
+          "valueType": "xs:string",
+          "value": "Flood cooling",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAO747#001"
+              }
+            ]
+          }
+        }
+      ],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AFZ655#001"
+          }
+        ]
+      }
+    }
+  ],
+  "semanticId": {
+    "type": "GlobalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "0173-1#01-AFZ654#001"
+      }
+    ]
+  }
+}

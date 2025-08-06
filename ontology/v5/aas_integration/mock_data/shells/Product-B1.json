@@ -1,0 +1,43 @@
+{
+  "modelType": "AssetAdministrationShell",
+  "id": "urn:aas:Product:Product-B1",
+  "idShort": "Product-B1",
+  "assetInformation": {
+    "assetKind": "Type",
+    "globalAssetId": "https://example.com/products/Product-B1",
+    "specificAssetIds": [
+      {
+        "name": "ProductID",
+        "value": "Product-B1"
+      },
+      {
+        "name": "ProductType",
+        "value": "Housing"
+      }
+    ]
+  },
+  "administration": {
+    "version": "1",
+    "revision": "0"
+  },
+  "submodels": [
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:ProductSpecification:Product-B1"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:ManufacturingRequirements:Product-B1"
+        }
+      ]
+    }
+  ]
+}

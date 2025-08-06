@@ -1,0 +1,43 @@
+{
+  "modelType": "AssetAdministrationShell",
+  "id": "urn:aas:Product:Product-D1",
+  "idShort": "Product-D1",
+  "assetInformation": {
+    "assetKind": "Type",
+    "globalAssetId": "https://example.com/products/Product-D1",
+    "specificAssetIds": [
+      {
+        "name": "ProductID",
+        "value": "Product-D1"
+      },
+      {
+        "name": "ProductType",
+        "value": "Prototype"
+      }
+    ]
+  },
+  "administration": {
+    "version": "1",
+    "revision": "0"
+  },
+  "submodels": [
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:ProductSpecification:Product-D1"
+        }
+      ]
+    },
+    {
+      "type": "ModelReference",
+      "keys": [
+        {
+          "type": "Submodel",
+          "value": "urn:aas:ManufacturingRequirements:Product-D1"
+        }
+      ]
+    }
+  ]
+}

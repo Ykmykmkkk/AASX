@@ -1,0 +1,278 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:Documentation:CNC003",
+  "idShort": "Documentation",
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "Documents",
+      "value": [
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Document_1",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "DocumentType",
+              "valueType": "xs:string",
+              "value": "OperatingManual",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO734#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "MultiLanguageProperty",
+              "idShort": "Title",
+              "value": [
+                {
+                  "language": "en",
+                  "text": "Mazak VARIAXIS i-700 Operating Manual"
+                }
+              ]
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Version",
+              "valueType": "xs:string",
+              "value": "2.0",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO736#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Date",
+              "valueType": "xs:dateTime",
+              "value": "2024-01-15T10:00:00Z",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO737#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "Property",
+              "idShort": "DocumentURL",
+              "valueType": "xs:anyURI",
+              "value": "https://docs.example.com/MAZAK-VI700-2024-003/manual.pdf",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO738#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Format",
+              "valueType": "xs:string",
+              "value": "PDF",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO739#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "Property",
+              "idShort": "FileSize",
+              "valueType": "xs:integer",
+              "value": "15728640",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO740#001"
+                  }
+                ]
+              },
+              "description": [
+                {
+                  "language": "en",
+                  "text": "File size in bytes"
+                }
+              ]
+            }
+          ],
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#01-AFZ633#001"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "SubmodelElementCollection",
+          "idShort": "Document_2",
+          "value": [
+            {
+              "modelType": "Property",
+              "idShort": "DocumentType",
+              "valueType": "xs:string",
+              "value": "MaintenanceManual",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO734#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "MultiLanguageProperty",
+              "idShort": "Title",
+              "value": [
+                {
+                  "language": "en",
+                  "text": "Mazak VARIAXIS i-700 Maintenance Guide"
+                }
+              ]
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Version",
+              "valueType": "xs:string",
+              "value": "1.5",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO736#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Date",
+              "valueType": "xs:dateTime",
+              "value": "2024-02-01T14:00:00Z",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO737#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "Property",
+              "idShort": "DocumentURL",
+              "valueType": "xs:anyURI",
+              "value": "https://docs.example.com/MAZAK-VI700-2024-003/maintenance.pdf",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO738#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "Property",
+              "idShort": "Format",
+              "valueType": "xs:string",
+              "value": "PDF",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO739#001"
+                  }
+                ]
+              }
+            },
+            {
+              "modelType": "Property",
+              "idShort": "FileSize",
+              "valueType": "xs:integer",
+              "value": "8388608",
+              "semanticId": {
+                "type": "GlobalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO740#001"
+                  }
+                ]
+              },
+              "description": [
+                {
+                  "language": "en",
+                  "text": "File size in bytes"
+                }
+              ]
+            }
+          ],
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#01-AFZ633#001"
+              }
+            ]
+          }
+        }
+      ],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AFZ632#001"
+          }
+        ]
+      }
+    }
+  ],
+  "semanticId": {
+    "type": "GlobalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "0173-1#01-AFZ631#001"
+      }
+    ]
+  },
+  "administration": {
+    "version": "1",
+    "revision": "0"
+  }
+}

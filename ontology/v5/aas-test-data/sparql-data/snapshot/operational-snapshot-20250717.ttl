@@ -1,0 +1,215 @@
+@prefix prod: <http://example.org/production-domain#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== Operational Snapshot for 2025-07-17 =====
+# 특정 시점의 머신 상태 및 센서 데이터
+
+# Snapshot Metadata
+prod:Snapshot-20250717
+    rdf:type prod:OperationalSnapshot ;
+    prod:snapshotTime "2025-07-17T10:00:00"^^xsd:dateTime ;
+    rdfs:comment "Operational data snapshot for all machines on 2025-07-17" .
+
+# Machine Status at 2025-07-17
+prod:CoolingMachine-01
+    prod:hasStatus "Error" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Error" ;
+        prod:temperature "25.3"^^xsd:float ;
+        prod:pressure "105.2"^^xsd:float ;
+        prod:vibration "4.8"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:errorCode "TEMP_HIGH" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:CoolingMachine-02
+    prod:hasStatus "Active" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Active" ;
+        prod:temperature "22.1"^^xsd:float ;
+        prod:pressure "101.3"^^xsd:float ;
+        prod:vibration "2.1"^^xsd:float ;
+        prod:utilization "0.78"^^xsd:float ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:CoolingMachine-03
+    prod:hasStatus "Active" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Active" ;
+        prod:temperature "21.8"^^xsd:float ;
+        prod:pressure "100.9"^^xsd:float ;
+        prod:vibration "1.9"^^xsd:float ;
+        prod:utilization "0.85"^^xsd:float ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:CoolingMachine-04
+    prod:hasStatus "Error" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Error" ;
+        prod:temperature "26.7"^^xsd:float ;
+        prod:pressure "108.5"^^xsd:float ;
+        prod:vibration "5.2"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:errorCode "PRESSURE_HIGH" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:CoolingMachine-05
+    prod:hasStatus "Active" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Active" ;
+        prod:temperature "22.5"^^xsd:float ;
+        prod:pressure "101.0"^^xsd:float ;
+        prod:vibration "2.0"^^xsd:float ;
+        prod:utilization "0.92"^^xsd:float ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:HeatingMachine-01
+    prod:hasStatus "Error" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Error" ;
+        prod:temperature "95.2"^^xsd:float ;
+        prod:pressure "120.5"^^xsd:float ;
+        prod:vibration "3.5"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:errorCode "OVERHEAT" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:HeatingMachine-02
+    prod:hasStatus "Active" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Active" ;
+        prod:temperature "88.5"^^xsd:float ;
+        prod:pressure "115.2"^^xsd:float ;
+        prod:vibration "2.8"^^xsd:float ;
+        prod:utilization "0.82"^^xsd:float ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:HeatingMachine-03
+    prod:hasStatus "Maintenance" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Maintenance" ;
+        prod:temperature "25.0"^^xsd:float ;
+        prod:pressure "100.0"^^xsd:float ;
+        prod:vibration "0.0"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:maintenanceType "Scheduled" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:AssemblyMachine-01
+    prod:hasStatus "Active" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Active" ;
+        prod:temperature "28.3"^^xsd:float ;
+        prod:pressure "102.1"^^xsd:float ;
+        prod:vibration "3.2"^^xsd:float ;
+        prod:utilization "0.75"^^xsd:float ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:AssemblyMachine-02
+    prod:hasStatus "Maintenance" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Maintenance" ;
+        prod:temperature "24.0"^^xsd:float ;
+        prod:pressure "100.0"^^xsd:float ;
+        prod:vibration "0.0"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:maintenanceType "Unscheduled" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:AssemblyMachine-03
+    prod:hasStatus "Active" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Active" ;
+        prod:temperature "27.8"^^xsd:float ;
+        prod:pressure "101.8"^^xsd:float ;
+        prod:vibration "2.9"^^xsd:float ;
+        prod:utilization "0.88"^^xsd:float ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:AssemblyMachine-04
+    prod:hasStatus "Error" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Error" ;
+        prod:temperature "32.5"^^xsd:float ;
+        prod:pressure "105.3"^^xsd:float ;
+        prod:vibration "6.2"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:errorCode "MOTOR_FAILURE" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:CuttingMachine-01
+    prod:hasStatus "Error" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Error" ;
+        prod:temperature "35.2"^^xsd:float ;
+        prod:pressure "103.5"^^xsd:float ;
+        prod:vibration "4.5"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:errorCode "BLADE_WEAR" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:CuttingMachine-02
+    prod:hasStatus "Error" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Error" ;
+        prod:temperature "33.8"^^xsd:float ;
+        prod:pressure "104.2"^^xsd:float ;
+        prod:vibration "4.8"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:errorCode "ALIGNMENT_ERROR" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:WeldingMachine-01
+    prod:hasStatus "Active" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Active" ;
+        prod:temperature "185.5"^^xsd:float ;
+        prod:pressure "125.3"^^xsd:float ;
+        prod:vibration "3.8"^^xsd:float ;
+        prod:utilization "0.70"^^xsd:float ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .
+
+prod:WeldingMachine-02
+    prod:hasStatus "Maintenance" ;
+    prod:hasOperationalStatus [
+        rdf:type prod:MachineStatus ;
+        prod:statusValue "Maintenance" ;
+        prod:temperature "28.0"^^xsd:float ;
+        prod:pressure "100.0"^^xsd:float ;
+        prod:vibration "0.0"^^xsd:float ;
+        prod:utilization "0.0"^^xsd:float ;
+        prod:maintenanceType "Scheduled" ;
+        prod:recordedAt "2025-07-17T10:00:00"^^xsd:dateTime
+    ] .

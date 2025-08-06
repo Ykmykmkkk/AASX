@@ -1,0 +1,210 @@
+@prefix bridge: <http://example.org/bridge-ontology#> .
+@prefix exec: <http://example.org/execution-ontology#> .
+@prefix prod: <http://example.org/production-domain#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== Bridge Ontology: MAPPING between DSL and Domain =====
+
+bridge:BridgeOntology rdf:type owl:Ontology ;
+    rdfs:label "Bridge Ontology" ;
+    rdfs:comment "Maps DSL parameters to domain concepts and defines implicit filters" .
+
+# ===== Core Mapping Classes =====
+
+bridge:GoalMapping rdf:type owl:Class ;
+    rdfs:comment "Mapping from DSL goal to execution and domain concepts" .
+
+bridge:ParameterMapping rdf:type owl:Class ;
+    rdfs:comment "Mapping from DSL parameter to domain property" .
+
+bridge:ImplicitFilter rdf:type owl:Class ;
+    rdfs:comment "Implicit filter applied based on goal type" .
+
+bridge:TransformFunction rdf:type owl:Class ;
+    rdfs:comment "Function to transform DSL value to domain value" .
+
+# ===== Mapping Properties =====
+
+bridge:mapsGoal rdf:type owl:DatatypeProperty ;
+    rdfs:domain bridge:GoalMapping ;
+    rdfs:range xsd:string ;
+    rdfs:comment "DSL goal name" .
+
+bridge:toExecutionGoal rdf:type owl:ObjectProperty ;
+    rdfs:domain bridge:GoalMapping ;
+    rdfs:range exec:Goal ;
+    rdfs:comment "Maps to execution goal" .
+
+bridge:hasParameterMapping rdf:type owl:ObjectProperty ;
+    rdfs:domain bridge:GoalMapping ;
+    rdfs:range bridge:ParameterMapping ;
+    rdfs:comment "Parameter mappings for this goal" .
+
+bridge:hasImplicitFilter rdf:type owl:ObjectProperty ;
+    rdfs:domain bridge:GoalMapping ;
+    rdfs:range bridge:ImplicitFilter ;
+    rdfs:comment "Implicit filters for this goal" .
+
+bridge:dslParam rdf:type owl:DatatypeProperty ;
+    rdfs:domain bridge:ParameterMapping ;
+    rdfs:range xsd:string ;
+    rdfs:comment "DSL parameter name" .
+
+bridge:domainProperty rdf:type owl:ObjectProperty ;
+    rdfs:domain bridge:ParameterMapping ;
+    rdfs:comment "Maps to domain property" .
+
+bridge:transformFunction rdf:type owl:ObjectProperty ;
+    rdfs:domain bridge:ParameterMapping ;
+    rdfs:range bridge:TransformFunction ;
+    rdfs:comment "Transform function to apply" .
+
+bridge:filterProperty rdf:type owl:ObjectProperty ;
+    rdfs:domain bridge:ImplicitFilter ;
+    rdfs:comment "Domain property to filter" .
+
+bridge:filterValue rdf:type owl:DatatypeProperty ;
+    rdfs:domain bridge:ImplicitFilter ;
+    rdfs:comment "Value to filter by" .
+
+# ===== Transform Functions =====
+
+bridge:DateToDateTimeFilter rdf:type bridge:TransformFunction ;
+    rdfs:label "Date to DateTime Filter" ;
+    rdfs:comment "Converts date string to SPARQL datetime filter" .
+
+bridge:StringToBoolean rdf:type bridge:TransformFunction ;
+    rdfs:label "String to Boolean" ;
+    rdfs:comment "Converts string to boolean value" .
+
+bridge:CurrentDateResolver rdf:type bridge:TransformFunction ;
+    rdfs:label "Current Date Resolver" ;
+    rdfs:comment "Resolves 'today', 'yesterday' to actual dates" .
+
+# ===== Goal Mappings =====
+
+# Mapping 1: Query Failed Jobs with Cooling
+bridge:QueryFailedCoolingJobsMapping rdf:type bridge:GoalMapping ;
+    bridge:mapsGoal "query_failed_jobs_with_cooling" ;
+    bridge:toExecutionGoal exec:QueryFailedCoolingJobs ;
+    bridge:hasParameterMapping [
+        bridge:dslParam "date" ;
+        bridge:domainProperty prod:hasStartTime ;
+        bridge:transformFunction bridge:DateToDateTimeFilter
+    ] ;
+    bridge:hasImplicitFilter [
+        bridge:filterProperty prod:requiresCooling ;
+        bridge:filterValue "true"^^xsd:boolean
+    ] ;
+    bridge:hasImplicitFilter [
+        bridge:filterProperty prod:hasStatus ;
+        bridge:filterValue "Failed"
+    ] .
+
+# Mapping 2: Detect Anomaly for Product
+bridge:DetectAnomalyMapping rdf:type bridge:GoalMapping ;
+    bridge:mapsGoal "detect_anomaly_for_product" ;
+    bridge:toExecutionGoal exec:DetectProductAnomaly ;
+    bridge:hasParameterMapping [
+        bridge:dslParam "product_id" ;
+        bridge:domainProperty prod:forProduct
+    ] ;
+    bridge:hasParameterMapping [
+        bridge:dslParam "date_range" ;
+        bridge:domainProperty prod:hasStartTime ;
+        bridge:transformFunction bridge:DateRangeToFilter
+    ] ;
+    bridge:hasParameterMapping [
+        bridge:dslParam "target_machine" ;
+        bridge:domainProperty prod:executedOn
+    ] .
+
+# Mapping 3: Predict Completion Time
+bridge:PredictCompletionMapping rdf:type bridge:GoalMapping ;
+    bridge:mapsGoal "predict_first_completion_time" ;
+    bridge:toExecutionGoal exec:PredictCompletionTime ;
+    bridge:hasParameterMapping [
+        bridge:dslParam "product_id" ;
+        bridge:domainProperty prod:forProduct
+    ] ;
+    bridge:hasParameterMapping [
+        bridge:dslParam "quantity" ;
+        bridge:domainProperty bridge:simulationQuantity ;
+        rdfs:comment "Special parameter for simulation"
+    ] .
+
+# Mapping 4: Track Product Position
+bridge:TrackProductMapping rdf:type bridge:GoalMapping ;
+    bridge:mapsGoal "track_product_position" ;
+    bridge:toExecutionGoal exec:TrackProductLocation ;
+    bridge:hasParameterMapping [
+        bridge:dslParam "product_id" ;
+        bridge:domainProperty prod:forProduct
+    ] ;
+    bridge:hasImplicitFilter [
+        bridge:filterProperty prod:hasStatus ;
+        bridge:filterValue "Processing"
+    ] .
+
+# ===== Query Templates =====
+
+bridge:JobQueryTemplate rdf:type bridge:QueryTemplate ;
+    rdfs:label "Job Query Template" ;
+    bridge:baseQuery """
+        PREFIX prod: <http://example.org/production-domain#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        
+        SELECT ?job ?machine ?startTime ?status ?errorLog
+        WHERE {
+            ?job rdf:type prod:Job .
+            %%FILTERS%%
+            OPTIONAL { 
+                ?job prod:executedOn ?machine .
+                ?machine prod:hasAASEndpoint ?aas .
+            }
+            OPTIONAL { 
+                ?job prod:hasExecutionResult ?result .
+                ?result prod:hasErrorLog ?errorLog .
+            }
+        }
+        ORDER BY DESC(?startTime)
+    """ ;
+    bridge:filterTemplate "?job %%PROPERTY%% %%VALUE%% ." .
+
+bridge:ProductTrackingTemplate rdf:type bridge:QueryTemplate ;
+    rdfs:label "Product Tracking Template" ;
+    bridge:baseQuery """
+        PREFIX prod: <http://example.org/production-domain#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        
+        SELECT ?job ?status ?machine ?opIndex ?operation
+        WHERE {
+            ?job rdf:type prod:Job ;
+                 prod:forProduct prod:%%PRODUCT_ID%% ;
+                 prod:hasStatus ?status ;
+                 prod:executedOn ?machine .
+            OPTIONAL { 
+                ?job prod:currentOperationIndex ?opIndex ;
+                     prod:composedOf ?operation .
+                ?operation prod:sequenceIndex ?opIndex .
+            }
+            FILTER(?status = "Processing")
+        }
+    """ .
+
+# ===== Result Transformations =====
+
+bridge:JobResultTransform rdf:type bridge:ResultTransform ;
+    rdfs:label "Job Result Transform" ;
+    bridge:addField [
+        bridge:fieldName "machine_location" ;
+        bridge:lookupFrom prod:locatedAt
+    ] ;
+    bridge:addField [
+        bridge:fieldName "error_description" ;
+        bridge:parseFrom prod:errorCode ;
+        bridge:usingMapping bridge:ErrorCodeMapping
+    ] .

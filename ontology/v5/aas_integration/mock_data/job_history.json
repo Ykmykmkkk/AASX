@@ -1,0 +1,61 @@
+{
+  "date": "2025-07-17",
+  "jobs": [
+    {
+      "job_id": "JOB-001",
+      "machine_id": "CNC002",
+      "product_id": "Product-B1",
+      "start_time": "2025-07-17T08:00:00Z",
+      "end_time": "2025-07-17T08:45:00Z",
+      "status": "FAILED",
+      "error_code": "cooling_system_error",
+      "error_message": "Cooling system malfunction detected",
+      "temperature_at_failure": 85.5
+    },
+    {
+      "job_id": "JOB-002",
+      "machine_id": "CNC001",
+      "product_id": "Product-C1",
+      "start_time": "2025-07-17T10:00:00Z",
+      "end_time": "2025-07-17T10:30:00Z",
+      "status": "FAILED",
+      "error_code": "temperature_exceeded",
+      "error_message": "Maximum temperature threshold exceeded",
+      "temperature_at_failure": 92.3
+    },
+    {
+      "job_id": "JOB-003",
+      "machine_id": "CNC002",
+      "product_id": "Product-B1",
+      "start_time": "2025-07-17T12:00:00Z",
+      "end_time": "2025-07-17T12:15:00Z",
+      "status": "FAILED",
+      "error_code": "coolant_flow_insufficient",
+      "error_message": "Insufficient coolant flow rate",
+      "coolant_flow_rate": 2.3
+    },
+    {
+      "job_id": "JOB-004",
+      "machine_id": "CNC003",
+      "product_id": "Product-A1",
+      "start_time": "2025-07-17T09:00:00Z",
+      "end_time": "2025-07-17T10:30:00Z",
+      "status": "COMPLETED",
+      "parts_produced": 25
+    },
+    {
+      "job_id": "JOB-005",
+      "machine_id": "3DP001",
+      "product_id": "Product-D1",
+      "start_time": "2025-07-17T11:00:00Z",
+      "end_time": "2025-07-17T14:00:00Z",
+      "status": "COMPLETED",
+      "parts_produced": 3
+    }
+  ],
+  "summary": {
+    "total_jobs": 5,
+    "failed_jobs": 3,
+    "cooling_failures": 3
+  }
+}

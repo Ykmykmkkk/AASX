@@ -1,0 +1,173 @@
+{
+  "modelType": "Submodel",
+  "id": "urn:aas:OperationalData:ASM001",
+  "idShort": "OperationalData",
+  "kind": "Instance",
+  "submodelElements": [
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "OperatingMetrics",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "MachineHours",
+          "valueType": "xs:decimal",
+          "value": "6234.1",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAI729#001"
+              }
+            ]
+          },
+          "description": [
+            {
+              "language": "en",
+              "text": "Total machine operating hours"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ProductionCycles",
+          "valueType": "xs:integer",
+          "value": "45123",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAI730#001"
+              }
+            ]
+          },
+          "description": [
+            {
+              "language": "en",
+              "text": "Total production cycles completed"
+            }
+          ]
+        },
+        {
+          "modelType": "Property",
+          "idShort": "LastMaintenanceDate",
+          "valueType": "xs:dateTime",
+          "value": "2025-07-05T16:00:00Z",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAI731#001"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "ErrorCount",
+          "valueType": "xs:integer",
+          "value": "5",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAI732#001"
+              }
+            ]
+          }
+        }
+      ],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AFZ627#001"
+          }
+        ]
+      }
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "CurrentStatus",
+      "value": [
+        {
+          "modelType": "Property",
+          "idShort": "OperatingState",
+          "valueType": "xs:string",
+          "value": "IDLE",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAI733#001"
+              }
+            ]
+          }
+        },
+        {
+          "modelType": "Property",
+          "idShort": "CurrentUtilization",
+          "valueType": "xs:decimal",
+          "value": "65.5",
+          "semanticId": {
+            "type": "GlobalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "0173-1#02-AAI734#001"
+              }
+            ]
+          },
+          "description": [
+            {
+              "language": "en",
+              "text": "Current utilization in percentage"
+            }
+          ]
+        }
+      ],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AFZ628#001"
+          }
+        ]
+      }
+    },
+    {
+      "modelType": "SubmodelElementCollection",
+      "idShort": "JobHistory",
+      "value": [],
+      "semanticId": {
+        "type": "GlobalReference",
+        "keys": [
+          {
+            "type": "GlobalReference",
+            "value": "0173-1#01-AFZ629#001"
+          }
+        ]
+      }
+    }
+  ],
+  "semanticId": {
+    "type": "GlobalReference",
+    "keys": [
+      {
+        "type": "GlobalReference",
+        "value": "0173-1#01-AFZ626#001"
+      }
+    ]
+  },
+  "administration": {
+    "version": "1",
+    "revision": "0"
+  }
+}

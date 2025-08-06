@@ -1,0 +1,65 @@
+@prefix prod: <http://example.org/production-domain#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== Additional Products =====
+
+# Product D1 - 복잡한 조립 제품
+prod:Product-D1
+    rdf:type prod:Product ;
+    rdfs:label "Advanced Assembly Product D1" ;
+    prod:productType "Assembly" ;
+    prod:complexity "High" ;
+    prod:requiredOperations "5"^^xsd:integer ;
+    prod:targetQuantity "50"^^xsd:integer ;
+    prod:specifications [
+        prod:material "Aluminum" ;
+        prod:weight "2.5"^^xsd:decimal ;
+        prod:dimensions "300x200x150" ;
+        prod:qualityLevel "Premium"
+    ] ;
+    prod:hasJobTemplate prod:JobTemplate-D1 .
+
+# Product D1의 작업 템플릿 (Goal 3 테스트용)
+prod:JobTemplate-D1
+    rdf:type prod:JobTemplate ;
+    rdfs:label "Template for Product D1" ;
+    prod:hasOperation [
+        rdf:type prod:Operation ;
+        prod:operationIndex "1"^^xsd:integer ;
+        prod:operationType "Cutting" ;
+        prod:canBeExecutedOn prod:CuttingMachine-01 ;
+        prod:canBeExecutedOn prod:CuttingMachine-02 ;
+        prod:hasDuration "20"^^xsd:integer
+    ] ;
+    prod:hasOperation [
+        rdf:type prod:Operation ;
+        prod:operationIndex "2"^^xsd:integer ;
+        prod:operationType "Welding" ;
+        prod:canBeExecutedOn prod:WeldingMachine-01 ;
+        prod:hasDuration "25"^^xsd:integer
+    ] ;
+    prod:hasOperation [
+        rdf:type prod:Operation ;
+        prod:operationIndex "3"^^xsd:integer ;
+        prod:operationType "Assembly" ;
+        prod:canBeExecutedOn prod:AssemblyMachine-01 ;
+        prod:canBeExecutedOn prod:AssemblyMachine-02 ;
+        prod:hasDuration "30"^^xsd:integer
+    ] ;
+    prod:hasOperation [
+        rdf:type prod:Operation ;
+        prod:operationIndex "4"^^xsd:integer ;
+        prod:operationType "Cooling" ;
+        prod:canBeExecutedOn prod:CoolingMachine-01 ;
+        prod:canBeExecutedOn prod:CoolingMachine-02 ;
+        prod:hasDuration "15"^^xsd:integer
+    ] ;
+    prod:hasOperation [
+        rdf:type prod:Operation ;
+        prod:operationIndex "5"^^xsd:integer ;
+        prod:operationType "QualityCheck" ;
+        prod:canBeExecutedOn prod:QualityMachine-01 ;
+        prod:hasDuration "10"^^xsd:integer
+    ] .
