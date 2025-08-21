@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """
+"C:/Program Files/Python312/python.exe" visualize.py trace.xlsx -o timeline.png     
+Timeline saved to timeline.png
+
 visualize.py: Plot a Gantt-style timeline of operations executed by machines M1, M2, M3
 
 Usage:
