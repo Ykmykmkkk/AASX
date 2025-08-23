@@ -10,17 +10,21 @@ def load(fp):
 
 class ModelBuilder:
     def __init__(self, subpath):
-        base = os.path.dirname(__file__)
-        self.path = os.path.join(base, subpath)
+        # 절대 경로로 변환
+        if os.path.isabs(subpath):
+            self.path = subpath
+        else:
+            base = os.path.dirname(__file__)
+            self.path = os.path.join(base, subpath)
 
     def build(self):
-        jobs_j   = load(self.path + '/jobs.json')
-        ops_j    = load(self.path + '/operations.json')
-        dur_j    = load(self.path + '/operation_durations.json')
-        rout     = load(self.path + '/routing_result.json')
-        trans    = load(self.path + '/machine_transfer_time.json')
-        init_m   = load(self.path + '/initial_machine_status.json')
-        releases = load(self.path + '/job_release.json')
+        jobs_j   = load(os.path.join(self.path, 'jobs.json'))
+        ops_j    = load(os.path.join(self.path, 'operations.json'))
+        dur_j    = load(os.path.join(self.path, 'operation_durations.json'))
+        rout     = load(os.path.join(self.path, 'routing_result.json'))
+        trans    = load(os.path.join(self.path, 'machine_transfer_time.json'))
+        init_m   = load(os.path.join(self.path, 'initial_machine_status.json'))
+        releases = load(os.path.join(self.path, 'job_release.json'))
 
         op_map    = {o['operation_id']: o for o in ops_j}
         route_map = {r['operation_id']: r['assigned_machine'] for r in rout}
