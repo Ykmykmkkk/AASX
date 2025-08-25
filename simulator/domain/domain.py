@@ -12,7 +12,7 @@ class Operation:
     def __init__(self, op_id, assigned_machine, candidate_machines, distribution):
         """
         :param op_id: Operation ID
-        :param assigned_machine: 실제 라우팅된 기계 이름
+        :param assigned_machine: 실제 라우팅된 기계 이름 (동적 모드에서는 None)
         :param candidate_machines: 가능한 기계 리스트
         :param distribution: 작업 소요 시간 분포 파라미터
         """
@@ -22,10 +22,13 @@ class Operation:
         self.distribution = distribution
 
     def select_machine(self):
-        # 항상 라우팅된 기계를 반환
+        # 동적 할당 모드에서는 None 반환 (실시간 결정 필요)
+        if self.assigned_machine is None:
+            return None
+        # 정적 할당 모드에서는 고정된 기계 반환
         return self.assigned_machine
 
-    def sample_duration(self):
+    def sample_duration(self, machine_id=None):
         d = self.distribution
         t = d['distribution']
         if t == 'normal':
@@ -37,16 +40,18 @@ class Operation:
         raise RuntimeError('Unknown distribution')
 
 class Job:
-    def __init__(self, job_id, part_id, operations):
+    def __init__(self, job_id, part_id, operations, release_time=0.0):
         """
         :param job_id: Job identifier
         :param part_id: Part identifier
         :param operations: list of Operation instances
+        :param release_time: Job release time
         """
         self.id = job_id
         self.part_id = part_id
         self.ops = operations
         self.idx = 0
+        self.release_time = release_time  # Job 릴리스 시간 추가
         
         # 상태 관리 추가
         self.status = JobStatus.QUEUED
@@ -54,6 +59,9 @@ class Job:
         self.last_completion_time = None  # 가장 최근에 일을 마쳤을 때의 timestamp
         self.total_operations = len(operations)  # 수행해야 하는 operation의 개수
         self.completed_operations = 0  # 완료된 operation의 개수
+        
+        # 상태 저장을 위한 메서드들
+        self._state_snapshot = None
 
     def current_op(self):
         return self.ops[self.idx] if self.idx < len(self.ops) else None
@@ -101,6 +109,25 @@ class Job:
             'progress': self.get_progress(),
             'remaining_operations': self.get_remaining_operations()
         }
+    
+    def save_state(self):
+        """Job의 현재 상태를 저장합니다 (최소한의 정보만)."""
+        return {
+            'job_id': self.id,
+            'idx': self.idx,
+            'status': self.status,
+            'current_location': self.current_location,
+            'last_completion_time': self.last_completion_time,
+            'completed_operations': self.completed_operations
+        }
+    
+    def restore_state(self, state):
+        """저장된 상태를 복원합니다."""
+        self.idx = state['idx']
+        self.status = state['status']
+        self.current_location = state['current_location']
+        self.last_completion_time = state['last_completion_time']
+        self.completed_operations = state['completed_operations']
 
 class Part:
     def __init__(self, part_id, job):

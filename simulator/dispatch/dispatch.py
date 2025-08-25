@@ -7,7 +7,12 @@ class DispatchStrategy:
 
 class FIFO(DispatchStrategy):
     def select(self, queue):
-        return queue.popleft()
+        if hasattr(queue, 'popleft'):
+            # deque인 경우
+            return queue.popleft()
+        else:
+            # list인 경우
+            return queue.pop(0)
 
 # --- simulator/model/machine.py ---
 from simulator.engine.simulator import EoModel, Event
