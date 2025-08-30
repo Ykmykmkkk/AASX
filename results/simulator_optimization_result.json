@@ -1,8 +1,8 @@
 {
   "algorithm": "BRANCH_AND_BOUND",
   "best_objective": Infinity,
-  "search_time": 0.10952329635620117,
-  "nodes_explored": 8,
+  "search_time": 0.022350549697875977,
+  "nodes_explored": 2,
   "best_schedule": [],
   "search_log": []
 }

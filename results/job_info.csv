@@ -1,4 +1,6 @@
 job_id,part_id,status,current_location,last_completion_time,total_operations,completed_operations,current_operation,progress,remaining_operations,machine,queue_type
-J1,P1,DONE,,19.45160946782122,3,3,,1.0,0,M1,finished
-J3,P3,DONE,,21.58716735128221,2,2,,1.0,0,M1,finished
-J2,P2,DONE,,16.667716286068135,2,2,,1.0,0,M2,finished
+J1,P1,DONE,,12.333331008837744,3,4,,1.3333333333333333,-1,M1,finished
+J2,P2,DONE,,22.080528056707944,2,3,,1.5,-1,M1,finished
+J1,P1,DONE,,12.333331008837744,3,4,,1.3333333333333333,-1,M2,finished
+J2,P2,DONE,,22.080528056707944,2,3,,1.5,-1,M2,finished
+J3,P3,DONE,,11.892603889190978,2,2,,1.0,0,M3,finished

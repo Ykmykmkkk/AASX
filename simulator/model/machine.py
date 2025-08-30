@@ -30,15 +30,15 @@ class OperationInfo:
         }
 
 class Machine(EoModel):
-    def __init__(self, name, transfer_map, initial, dispatch_rule='fifo'):
+    def __init__(self, name, transfer_map, initial, dispatch_rule='fifo', simulator=None):
         super().__init__(name)
         self.status = initial['status']
         self.queue = deque()
         self.running = None
         self.transfer = transfer_map
         self.dispatch = FIFO() if dispatch_rule=='fifo' else FIFO()
-        self.control_tower = None  # Control Tower 연결
         self.next_available_time = 0.0  # 다음 사용 가능 시간
+        self.simulator = simulator  # 시뮬레이터 참조
         
         # Job 상태 관리를 위한 큐들 (OperationInfo 대신 Job 상태 직접 관리)
         self.queued_jobs = deque()  # 대기 중인 Job들
@@ -86,10 +86,6 @@ class Machine(EoModel):
         if part.job not in self.queued_jobs:
             self.queued_jobs.append(part.job)
         
-        # Control Tower에 상태 업데이트 전송
-        if self.control_tower:
-            self._update_control_tower_status()
-        
         Recorder.log_queue(part, self.name, current_time, op_id, len(self.queue), queue_ops)
 
         ev = Event('machine_idle_check', dest_model=self.name)
@@ -111,24 +107,10 @@ class Machine(EoModel):
             return
             
         # 동적 스케줄링 사용 여부 확인
-        if self.control_tower:
-            # Control Tower를 통한 동적 할당 (릴리스된 작업만 대상)
-            assignment = self._get_dynamic_assignment(available_parts)
-            if assignment:
-                part, target_machine = assignment
-                if target_machine != self.name:
-                    # 다른 기계로 전송
-                    self._transfer_to_other_machine(part, target_machine)
-                    return
-                # 현재 기계에서 실행 - 동적 할당에서 이미 결정됨
-                print(f"[Machine {self.name}] 동적 할당으로 현재 기계에서 실행 결정")
-            else:
-                # 동적 할당 실패 시 기본 FIFO (릴리스된 작업 중에서)
-                part = self.dispatch.select(available_parts)
-        else:
-            # 기존 정적 스케줄링 (릴리스된 작업 중에서)
-            part = self.dispatch.select(available_parts)
-            
+        # 정적 스케줄링만 사용하므로 이 부분은 무시됩니다.
+        # 대신 큐에서 작업을 선택하여 실행합니다.
+        part = self.dispatch.select(available_parts)
+        
         op = part.job.current_op()
         if op is None:
             print(f"[Machine {self.name}] Job {part.job.id}의 현재 Operation이 없음 - 큐에서 제거")
@@ -143,13 +125,13 @@ class Machine(EoModel):
             return
             
         # 정적 스케줄링 모드에서만 assigned 체크
-        if not self.control_tower:
-            assigned = op.select_machine()
-            if assigned != self.name:
-                print(f"[Machine {self.name}] Operation {op.id}이 {assigned}에 할당되어 있음")
-                # 다른 기계로 전송
-                self._transfer_to_other_machine(part, assigned)
-                return
+        # 정적 스케줄링이므로 이 부분은 무시됩니다.
+        # assigned = op.select_machine()
+        # if assigned != self.name:
+        #     print(f"[Machine {self.name}] Operation {op.id}이 {assigned}에 할당되어 있음")
+        #     # 다른 기계로 전송
+        #     self._transfer_to_other_machine(part, assigned)
+        #     return
             
         dur = op.sample_duration()
 
@@ -163,107 +145,29 @@ class Machine(EoModel):
         part.job.set_location(self.name)
         
         # Control Tower에 Job 상태 업데이트
-        if self.control_tower:
-            job_status = {
-                'status': 'running',
-                'current_machine': self.name,
-                'current_operation': op.id,
-                'start_time': current_time,
-                'estimated_duration': dur
-            }
-            self.control_tower.update_job_status(part.job.id, job_status)
+        # 정적 스케줄링이므로 이 부분은 무시됩니다.
+        # if self.control_tower:
+        #     job_status = {
+        #         'status': 'running',
+        #         'current_machine': self.name,
+        #         'current_operation': op.id,
+        #         'start_time': current_time,
+        #         'estimated_duration': dur
+        #     }
+        #     self.control_tower.update_job_status(part.job.id, job_status)
         
         # 대기 중에서 실행 중으로 이동
         if part.job in self.queued_jobs:
             self.queued_jobs.remove(part.job)
         self.running_jobs.append(part.job)
         
-        # Control Tower에 상태 업데이트 전송
-        if self.control_tower:
-            self._update_control_tower_status()
+        # 기계 상태 업데이트
         
         Recorder.log_start(part, self.name, current_time, op.id, len(self.queue))
         
         # 작업 완료 이벤트 스케줄링
         ev = Event('end_operation', {'part': part, 'operation_id': op.id}, dest_model=self.name)
         self.schedule(ev, dur)
-
-    def _get_dynamic_assignment(self, available_parts=None):
-        """Control Tower를 통해 동적 할당 결정"""
-        if available_parts is None:
-            available_parts = self.queue
-            
-        if not self.control_tower or not available_parts:
-            print(f"[Machine {self.name}] 동적 할당 불가: control_tower={self.control_tower is not None}, available_parts={len(available_parts) if available_parts else 0}")
-            return None
-            
-        current_time = EoModel.get_time()
-        print(f"[Machine {self.name}] 동적 할당 시도 (큐 길이: {len(available_parts)})")
-        
-        # 현재 기계가 이미 작업 중인지 확인
-        if self.status == 'busy' and self.running:
-            print(f"[Machine {self.name}] 현재 작업 중: {self.running.job.id} - 다른 작업 할당 불가")
-            return None
-        
-        # 현재 기계의 상태 정보 수집
-        machine_status = {
-            'name': self.name,
-            'status': self.status,
-            'queue_length': len(available_parts),
-            'next_available_time': self.next_available_time,
-            'current_time': current_time,
-            'current_job': self.running.job.id if self.running else None,
-            'current_operation': self.running.job.current_op().id if self.running and self.running.job.current_op() else None
-        }
-        
-        # Control Tower에 상태 업데이트
-        self.control_tower.update_machine_status(self.name, machine_status)
-        
-        # 다음 작업 선택 (릴리스된 작업만 대상)
-        next_part = self.control_tower.select_next_job_for_machine(self.name, available_parts)
-        if not next_part:
-            print(f"[Machine {self.name}] 다음 작업 없음")
-            return None
-            
-        # Part에서 Job으로 접근
-        next_job = next_part.job
-        current_op = next_job.current_op()
-        
-        # 현재 Operation이 없는 경우 (Job 완료 또는 오류)
-        if current_op is None:
-            print(f"[Machine {self.name}] Job {next_job.id}의 현재 Operation이 없음 (완료됨)")
-            return None
-            
-        print(f"[Machine {self.name}] 다음 작업: {next_job.id}, Operation: {current_op.id}")
-        
-        # 최적 기계 선택
-        operation_id = current_op.id
-        job_id = next_job.id
-        available_machines = self.control_tower.get_available_machines(operation_id)
-        
-        # 무한 루프 방지: 전송 횟수 확인
-        transfer_count = self.transfer_counts.get(job_id, 0)
-        if transfer_count >= self.max_transfers:
-            print(f"[Machine {self.name}] Job {job_id} 전송 횟수 초과 ({transfer_count}), 현재 기계에서 실행")
-            return (next_part, self.name)
-        
-        optimal_machine = self.control_tower.select_optimal_machine_for_operation(
-            operation_id, job_id, available_machines, current_time
-        )
-        
-        if optimal_machine:
-            print(f"[Machine {self.name}] 동적 할당 결과: {optimal_machine}")
-            if optimal_machine != self.name:
-                print(f"[Machine {self.name}] 전송 필요: {self.name} → {optimal_machine}")
-                # 전송 횟수 증가
-                self.transfer_counts[job_id] = transfer_count + 1
-            else:
-                print(f"[Machine {self.name}] 현재 기계에서 실행")
-                # 현재 기계에서 실행하면 전송 횟수 초기화
-                if job_id in self.transfer_counts:
-                    del self.transfer_counts[job_id]
-        
-        return (next_part, optimal_machine) if optimal_machine else None
 
     def _transfer_to_other_machine(self, part, target_machine):
         """다른 기계로 작업 전송"""
@@ -296,24 +200,6 @@ class Machine(EoModel):
         transfer_count = self.transfer_counts.get(part.job.id, 0)
         print(f"[전송] {self.name} → {target_machine}: {part.job.id} (전송시간: {transfer_time:.2f}, 전송횟수: {transfer_count})")
 
-    def _update_control_tower_status(self):
-        """Control Tower에 현재 상태 업데이트"""
-        if not self.control_tower:
-            return
-            
-        current_time = EoModel.get_time()
-        machine_status = {
-            'name': self.name,
-            'status': self.status,
-            'queue_length': len(self.queue),
-            'next_available_time': self.next_available_time,
-            'current_time': current_time,
-            'queued_jobs': [job.id for job in self.queued_jobs],
-            'running_jobs': [job.id for job in self.running_jobs]
-        }
-        
-        self.control_tower.update_machine_status(self.name, machine_status)
-
     def _finish(self, op_id=None):
         part = self.running
         current_time = EoModel.get_time()
@@ -329,10 +215,11 @@ class Machine(EoModel):
 
         part.job.advance()
         if part.job.done():
-            # Job 완료
+            # Job 완료 (중복 방지)
             part.job.set_status(JobStatus.DONE)
             part.job.set_location(None)
-            self.finished_jobs.append(part.job)
+            if part.job not in self.finished_jobs:
+                self.finished_jobs.append(part.job)
             
             # queue와 queued_jobs에서 제거
             if part in self.queue:
@@ -340,14 +227,7 @@ class Machine(EoModel):
             if part.job in self.queued_jobs:
                 self.queued_jobs.remove(part.job)
             
-            # Control Tower에 Job 완료 상태 업데이트
-            if self.control_tower:
-                job_status = {
-                    'status': 'completed',
-                    'completion_time': current_time,
-                    'final_machine': self.name
-                }
-                self.control_tower.update_job_status(part.job.id, job_status)
+            # Job 완료 처리
             
             Recorder.log_done(part, EoModel.get_time())
             done_ev = Event('job_completed', {'part': part}, dest_model='transducer')
@@ -357,27 +237,23 @@ class Machine(EoModel):
             current_op = part.job.current_op()
             nxt = current_op.select_machine() if current_op else None
             
-            # 동적 스케줄링 모드에서 nxt가 None인 경우
+            # 시뮬레이션 기반 최적화를 위한 기계 선택
             if nxt is None:
-                # 첫 번째 후보 기계로 전송 (임시 할당)
                 candidates = part.job.current_op().candidates
                 if candidates:
-                    nxt = candidates[0]  # 첫 번째 후보 기계 선택
+                    # 시뮬레이션 기반 최적화에서는 최적화 알고리즘이 결정해야 함
+                    # 여기서는 기본 휴리스틱으로 첫 번째 후보 선택 (임시)
+                    nxt = candidates[0]
+                    print(f"[시뮬레이션 기반 할당] Job {part.job.id}의 {part.job.current_op().id}를 {nxt}로 할당 (최적화 알고리즘이 결정해야 함)")
                 else:
                     print(f"경고: Job {part.job.id}의 Operation {part.job.current_op().id}에 후보 기계가 없습니다.")
-                    # Job을 완료된 것으로 처리
+                    # Job을 완료된 것으로 처리 (중복 방지)
                     part.job.set_status(JobStatus.DONE)
                     part.job.set_location(None)
-                    self.finished_jobs.append(part.job)
+                    if part.job not in self.finished_jobs:
+                        self.finished_jobs.append(part.job)
                     
-                    # Control Tower에 Job 완료 상태 업데이트
-                    if self.control_tower:
-                        job_status = {
-                            'status': 'completed',
-                            'completion_time': current_time,
-                            'final_machine': self.name
-                        }
-                        self.control_tower.update_job_status(part.job.id, job_status)
+                    # Job 완료 처리
                     
                     Recorder.log_done(part, EoModel.get_time())
                     done_ev = Event('job_completed', {'part': part}, dest_model='transducer')
@@ -407,16 +283,16 @@ class Machine(EoModel):
             if part.job in self.queued_jobs:
                 self.queued_jobs.remove(part.job)
             
-            # Control Tower에 Job 전송 상태 업데이트
-            if self.control_tower:
-                job_status = {
-                    'status': 'transfer',
-                    'from_machine': self.name,
-                    'to_machine': nxt,
-                    'transfer_time': delay,
-                    'next_operation': part.job.current_op().id
-                }
-                self.control_tower.update_job_status(part.job.id, job_status)
+            # 정적 스케줄링이므로 이 부분은 무시됩니다.
+            # if self.control_tower:
+            #     job_status = {
+            #         'status': 'transfer',
+            #         'from_machine': self.name,
+            #         'to_machine': nxt,
+            #         'transfer_time': delay,
+            #         'next_operation': part.job.current_op().id
+            #     }
+            #     self.control_tower.update_job_status(part.job.id, job_status)
 
             Recorder.log_transfer(part, self.name, nxt, EoModel.get_time(), delay)
 
@@ -426,9 +302,7 @@ class Machine(EoModel):
         self.running = None
         self.status = 'idle'
         
-        # Control Tower에 상태 업데이트
-        if self.control_tower:
-            self._update_control_tower_status()
+        # 기계 상태 업데이트
         
         ev = Event('machine_idle_check', dest_model=self.name)
         self.schedule(ev, 0)

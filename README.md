@@ -1,166 +1,105 @@
-# AASX (Advanced Assembly System Simulator)
+# AASX (Advanced Adaptive Scheduling eXperiment)
 
-고급 조립 시스템 시뮬레이터로, 정적 및 동적 머신 할당을 지원하는 제조 시스템 시뮬레이션 도구입니다.
+시뮬레이터 기반 최적화를 통한 제조 시스템 스케줄링 최적화 도구입니다.
 
 ## 주요 기능
 
-### 1. 정적 스케줄링
-- 기존의 `routing_result.json` 파일을 통한 정적 operation 할당
-- 미리 정의된 머신 할당으로 예측 가능한 스케줄링
+- **시뮬레이터 기반 최적화**: 시뮬레이터를 사용하여 가능한 모든 스케줄링 조합을 탐색하고 최적해를 찾습니다
+- **다양한 최적화 알고리즘**: DFS, Branch-and-Bound, MCTS 알고리즘 지원
+- **정확한 시간 축 관리**: 이벤트 기반 시뮬레이션으로 정확한 시간 계산
+- **상세한 결과 분석**: 최적 스케줄과 예측 완료 시간 제공
 
-### 2. 동적 스케줄링 (신규)
-- **Control Tower**를 통한 실시간 머신 상태 관리
-- 다양한 스케줄링 전략 지원
-- 최적화된 머신 할당으로 효율성 향상
+## 설치 및 실행
 
-## 동적 스케줄링 시스템
+### 1. 시나리오 파일 준비
 
-### Control Tower
-머신들의 현재 상태를 실시간으로 관리하고, operation을 동적으로 최적 할당하는 핵심 시스템입니다.
+`scenarios/my_case/` 디렉토리에 다음 파일들을 준비하세요:
 
-#### 주요 기능
-- **실시간 머신 상태 모니터링**: 각 머신의 상태, 가용 시간, 큐 길이 등을 추적
-- **다양한 스케줄링 전략**: 부하 분산, 최단 처리 시간, 우선순위 기반 등
-- **동적 할당**: 현재 시스템 상태를 고려한 최적 머신 선택
-- **통계 및 분석**: 머신 활용도, 처리 시간, 대기 시간 등 분석
-
-#### 지원하는 스케줄링 전략
-1. **LOAD_BALANCING**: 부하 분산을 통한 균등한 머신 활용
-2. **EARLIEST_AVAILABLE**: 가장 빨리 사용 가능한 머신 선택
-3. **LEAST_LOADED**: 가장 적은 작업량을 가진 머신 선택
-4. **SHORTEST_PROCESSING_TIME**: 가장 짧은 처리 시간을 가진 머신 선택
-5. **PRIORITY_BASED**: 우선순위 기반 머신 선택
-
-### 사용 방법
-
-#### 1. 기본 동적 스케줄링
-```python
-from control.control_tower import ControlTower, SchedulingStrategy
-
-# Control Tower 생성
-control_tower = ControlTower("scenarios/my_case", SchedulingStrategy.LOAD_BALANCING)
-
-# Job operations 추가
-control_tower.add_job_operations("J1", ["O11", "O12", "O13"], priority=3)
-control_tower.add_job_operations("J2", ["O21", "O22"], priority=2)
-
-# 동적 할당 실행
-assignments = control_tower.assign_operations()
-
-# 결과 내보내기
-control_tower.export_routing_result("dynamic_routing_result.json")
+```
+scenarios/my_case/
+├── jobs.json              # 작업 정의
+├── operations.json        # 작업 단계 정의
+├── machines.json          # 기계 정의
+├── operation_durations.json  # 작업 시간 분포
+├── machine_transfer_time.json  # 기계 간 이동 시간
+├── initial_machine_status.json # 초기 기계 상태
+└── job_release.json       # 작업 출시 시간
 ```
 
-#### 2. DynamicScheduler 사용
-```python
-from control.dynamic_scheduler import DynamicScheduler
-
-# 스케줄러 생성
-scheduler = DynamicScheduler("scenarios/my_case", SchedulingStrategy.LOAD_BALANCING)
-
-# 우선순위 설정
-priorities = {"J1": 3, "J2": 2, "J3": 1}
-
-# 스케줄링 실행
-assignments = scheduler.schedule_jobs(priorities=priorities)
-
-# 결과 내보내기
-scheduler.export_results()
-```
-
-#### 3. 기존 시뮬레이터와 통합
-```python
-from control.simulator_adapter import run_dynamic_simulation
-
-# 동적 할당을 사용한 시뮬레이션 실행
-sim, adapter = run_dynamic_simulation("scenarios/my_case", SchedulingStrategy.LOAD_BALANCING)
-```
-
-### 테스트 실행
+### 2. 프로그램 실행
 
 ```bash
-# 기본 테스트
-python simulator/test_dynamic_scheduling.py
+# 기본 실행 (Branch-and-Bound 알고리즘)
+python simulator/main.py --scenario scenarios/my_case
 
-# 동적 스케줄러 테스트
-python simulator/control/dynamic_scheduler.py
+# 다른 알고리즘 사용
+python simulator/main.py --algorithm mcts --scenario scenarios/my_case
 
-# 시뮬레이터 통합 테스트
-python simulator/control/simulator_adapter.py
+# 시간 제한 설정
+python simulator/main.py --time_limit 600 --scenario scenarios/my_case
+
+# 최대 노드 수 설정
+python simulator/main.py --max_nodes 50000 --scenario scenarios/my_case
 ```
 
-## 프로젝트 구조
+### 3. 명령행 옵션
 
-```
-AASX/
-├── simulator/
-│   ├── control/                    # 동적 스케줄링 시스템
-│   │   ├── control_tower.py       # Control Tower 클래스
-│   │   ├── dynamic_scheduler.py   # 동적 스케줄러
-│   │   └── simulator_adapter.py   # 시뮬레이터 통합 어댑터
-│   ├── scenarios/
-│   │   └── my_case/               # 시나리오 데이터
-│   │       ├── jobs.json          # Job 정의
-│   │       ├── operations.json    # Operation 정의
-│   │       ├── machines.json      # 머신 상태
-│   │       ├── operation_durations.json  # 처리 시간 정보
-│   │       └── routing_result.json       # 정적 할당 결과
-│   └── test_dynamic_scheduling.py # 테스트 스크립트
-└── results/                       # 시뮬레이션 결과
-```
+- `--algorithm`: 최적화 알고리즘 선택 (`dfs`, `branch_and_bound`, `mcts`)
+- `--policy`: 롤아웃 정책 선택 (`ect`, `spt`, `atc`, `edd`)
+- `--time_limit`: 최적화 시간 제한 (초)
+- `--max_nodes`: 최대 탐색 노드 수
+- `--scenario`: 시나리오 디렉토리 경로
 
-## 시나리오 파일 형식
+## 출력 결과
 
-### jobs.json
-```json
-[
-  {
-    "job_id": "J1",
-    "part_id": "P1",
-    "operations": ["O11", "O12", "O13"]
-  }
-]
-```
+프로그램 실행 후 `results/` 디렉토리에 다음 파일들이 생성됩니다:
 
-### operations.json
-```json
-[
-  {
-    "operation_id": "O11",
-    "job_id": "J1",
-    "type": "drilling",
-    "machines": ["M1", "M2"]
-  }
-]
-```
+- `simulator_optimization_result.json`: 최적화 결과 (최적 스케줄, makespan 등)
+- `trace.xlsx`: 상세 스케줄링 결과 (Excel 형식)
+- `job_info.csv`: 작업별 완료 시간 정보
+- `operation_info.csv`: 작업 단계별 정보
 
-### machines.json
-```json
-{
-  "M1": { "status": "idle", "next_available_time": 0.0 },
-  "M2": { "status": "idle", "next_available_time": 0.0 }
-}
-```
+## 최적화 과정
 
-### operation_durations.json
+1. **시나리오 로드**: JSON 파일들에서 시뮬레이션 모델 생성
+2. **최적화 실행**: 시뮬레이터를 사용하여 가능한 모든 스케줄링 조합 탐색
+3. **최적해 선택**: 가장 좋은 makespan을 가진 스케줄 선택
+4. **검증 시뮬레이션**: 찾은 최적 스케줄로 시뮬레이션 실행
+5. **결과 생성**: 상세한 스케줄링 결과와 분석 데이터 생성
+
+## 알고리즘 설명
+
+### Branch-and-Bound
+- 가장 정확한 최적화 알고리즘
+- 가지치기를 통한 효율적인 탐색
+- 전역 최적해 보장
+
+### MCTS (Monte Carlo Tree Search)
+- 확률적 탐색 알고리즘
+- 큰 문제에서도 효율적
+- 근사 최적해 제공
+
+### DFS (Depth-First Search)
+- 완전 탐색 알고리즘
+- 작은 문제에서 사용
+- 모든 가능한 조합 탐색
+
+## 예시 결과
+
 ```json
 {
-  "drilling": {
-    "M1": { "distribution": "normal", "mean": 3.0, "std": 0.5 },
-    "M2": { "distribution": "uniform", "low": 2.5, "high": 3.5 }
-  }
+  "algorithm": "BRANCH_AND_BOUND",
+  "best_objective": 15.2,
+  "search_time": 45.3,
+  "nodes_explored": 5000,
+  "best_schedule": [
+    "Action(O11 -> M1, pos=None)",
+    "Action(O12 -> M2, pos=None)",
+    "Action(O21 -> M1, pos=None)"
+  ]
 }
 ```
-
-## 성능 비교
-
-동적 스케줄링 시스템은 다음과 같은 이점을 제공합니다:
-
-1. **머신 활용도 향상**: 부하 분산을 통한 균등한 머신 활용
-2. **처리 시간 단축**: 최적 머신 선택으로 전체 처리 시간 단축
-3. **유연성**: 실시간 시스템 상태에 따른 동적 대응
-4. **확장성**: 새로운 스케줄링 전략 쉽게 추가 가능
 
 ## 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
+MIT License

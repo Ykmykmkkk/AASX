@@ -71,12 +71,11 @@ class EoModel:
         raise NotImplementedError
 
 class Simulator:
-    def __init__(self, control_tower=None):
+    def __init__(self):
         self.current_time = 0.0
         self.event_queue = []
         self.models = {}
         self.machines = []  # 기계 목록 저장
-        self.control_tower = control_tower  # Control Tower 연결
         self.decision_epochs = []  # 결정 시점들
         self.best_objective = float('inf')
         self.best_schedule = None
@@ -90,61 +89,39 @@ class Simulator:
 
     def register(self, model):
         self.models[model.name] = model
-        # 기계 모델인 경우 별도로 저장 및 Control Tower 연결
+        # 기계 모델인 경우 별도로 저장
         if hasattr(model, 'queued_jobs'):
             self.machines.append(model)
-            # Machine에 Control Tower 연결
-            if self.control_tower and hasattr(model, 'control_tower'):
-                model.control_tower = self.control_tower
 
     def snapshot(self):
-        """현재 시뮬레이터 상태의 스냅샷을 생성합니다."""
-        # 이벤트 큐 복사
+        """현재 시뮬레이터 상태의 스냅샷을 생성합니다 (최적화된 버전)."""
+        # 이벤트 큐 복사 (최소한의 정보만)
         event_queue_copy = []
         for event in self.event_queue:
+            # 이벤트의 핵심 정보만 복사
             event_copy = Event(
                 event.event_type,
-                copy.deepcopy(event.payload),
+                event.payload,  # payload는 이미 최소한의 정보
                 event.dest_model,
                 event.time
             )
             event_copy.src_model = event.src_model
             event_queue_copy.append(event_copy)
         
-        # 모델 상태 복사
-        models_state = {}
-        for name, model in self.models.items():
-            if hasattr(model, 'snapshot'):
-                models_state[name] = model.snapshot()
-            else:
-                # 기본 상태 복사
-                models_state[name] = {
-                    'name': model.name,
-                    'status': getattr(model, 'status', None),
-                    'queue': copy.deepcopy(getattr(model, 'queue', [])),
-                    'running': getattr(model, 'running', None),
-                    'queued_jobs': copy.deepcopy(getattr(model, 'queued_jobs', [])),
-                    'running_jobs': copy.deepcopy(getattr(model, 'running_jobs', [])),
-                    'finished_jobs': copy.deepcopy(getattr(model, 'finished_jobs', [])),
-                    'next_available_time': getattr(model, 'next_available_time', 0.0)
-                }
-        
         # 기계 상태 복사 (Job 객체 대신 Job 상태만 저장)
         machines_state = {}
         for machine in self.machines:
-            # Job 객체들을 상태 정보로 변환
+            # Job 객체들을 최소한의 상태 정보로 변환
             queued_jobs_state = [job.save_state() for job in machine.queued_jobs]
             running_jobs_state = [job.save_state() for job in machine.running_jobs]
             finished_jobs_state = [job.save_state() for job in machine.finished_jobs]
             
             machines_state[machine.name] = {
                 'status': machine.status,
-                'queue': copy.deepcopy(machine.queue),
-                'running': machine.running,
+                'next_available_time': machine.next_available_time,
                 'queued_jobs': queued_jobs_state,
                 'running_jobs': running_jobs_state,
                 'finished_jobs': finished_jobs_state,
-                'next_available_time': machine.next_available_time,
                 'transfer_counts': copy.deepcopy(getattr(machine, 'transfer_counts', {}))
             }
         
@@ -154,13 +131,13 @@ class Simulator:
         return SimulatorState(
             self.current_time,
             event_queue_copy,
-            models_state,
+            {},  # models_state는 비움 (기계 상태에 포함됨)
             machines_state,
             rng_state
         )
 
     def restore(self, state):
-        """스냅샷에서 상태를 복원합니다."""
+        """스냅샷에서 상태를 복원합니다 (최적화된 버전)."""
         self.current_time = state.current_time
         
         # 이벤트 큐 복원
@@ -168,75 +145,53 @@ class Simulator:
         for event in state.event_queue:
             self.push(event)
         
-        # 모델 상태 복원
-        for name, model_state in state.models_state.items():
-            if name in self.models:
-                model = self.models[name]
-                if hasattr(model, 'restore'):
-                    model.restore(model_state)
-                else:
-                    # 기본 상태 복원
-                    if 'status' in model_state:
-                        model.status = model_state['status']
-                    if 'queue' in model_state:
-                        model.queue = model_state['queue']
-                    if 'running' in model_state:
-                        model.running = model_state['running']
-                    if 'queued_jobs' in model_state:
-                        model.queued_jobs = model_state['queued_jobs']
-                    if 'running_jobs' in model_state:
-                        model.running_jobs = model_state['running_jobs']
-                    if 'finished_jobs' in model_state:
-                        model.finished_jobs = model_state['finished_jobs']
-                    if 'next_available_time' in model_state:
-                        model.next_available_time = model_state['next_available_time']
-        
-        # 기계 상태 복원
+        # 기계 상태 복원 (Job 객체들을 찾아서 상태만 복원)
         for machine_name, machine_state in state.machines_state.items():
             for machine in self.machines:
                 if machine.name == machine_name:
                     machine.status = machine_state['status']
-                    machine.queue = machine_state['queue']
-                    machine.running = machine_state['running']
                     machine.next_available_time = machine_state['next_available_time']
                     if 'transfer_counts' in machine_state:
                         machine.transfer_counts = machine_state['transfer_counts']
                     
-                    # Job 상태 복원 (Job 객체들을 찾아서 상태만 복원)
-                    # 모든 Job 객체들을 수집
+                    # 모든 Job 객체들을 수집 (한 번만)
                     all_jobs = []
                     for m in self.machines:
                         all_jobs.extend(m.queued_jobs)
                         all_jobs.extend(m.running_jobs)
                         all_jobs.extend(m.finished_jobs)
                     
-                    # queued_jobs 복원
+                    # Job 상태 복원 (최적화된 방식)
                     machine.queued_jobs = []
+                    machine.running_jobs = []
+                    machine.finished_jobs = []
+                    
+                    # Job ID로 빠른 검색을 위한 딕셔너리 생성
+                    job_dict = {job.id: job for job in all_jobs}
+                    
+                    # queued_jobs 복원
                     for job_state in machine_state['queued_jobs']:
-                        # 해당 Job 객체 찾기
-                        for job in all_jobs:
-                            if job.id == job_state.get('job_id', job_state.get('id')):
-                                job.restore_state(job_state)
-                                machine.queued_jobs.append(job)
-                                break
+                        job_id = job_state.get('job_id', job_state.get('id'))
+                        if job_id in job_dict:
+                            job = job_dict[job_id]
+                            job.restore_state(job_state)
+                            machine.queued_jobs.append(job)
                     
                     # running_jobs 복원
-                    machine.running_jobs = []
                     for job_state in machine_state['running_jobs']:
-                        for job in all_jobs:
-                            if job.id == job_state.get('job_id', job_state.get('id')):
-                                job.restore_state(job_state)
-                                machine.running_jobs.append(job)
-                                break
+                        job_id = job_state.get('job_id', job_state.get('id'))
+                        if job_id in job_dict:
+                            job = job_dict[job_id]
+                            job.restore_state(job_state)
+                            machine.running_jobs.append(job)
                     
                     # finished_jobs 복원
-                    machine.finished_jobs = []
                     for job_state in machine_state['finished_jobs']:
-                        for job in all_jobs:
-                            if job.id == job_state.get('job_id', job_state.get('id')):
-                                job.restore_state(job_state)
-                                machine.finished_jobs.append(job)
-                                break
+                        job_id = job_state.get('job_id', job_state.get('id'))
+                        if job_id in job_dict:
+                            job = job_dict[job_id]
+                            job.restore_state(job_state)
+                            machine.finished_jobs.append(job)
                     break
         
         # RNG 상태 복원
@@ -247,29 +202,24 @@ class Simulator:
         actions = []
         action_set = set()  # 중복 제거를 위한 set
         
-        # 기계가 idle한 시점에서 가능한 액션들
+        # 모든 기계의 큐에 있는 작업들에 대해 가능한 모든 액션 생성
         for machine in self.machines:
-            if machine.status == 'idle' and machine.queued_jobs:
-                # 현재 기계의 큐에 있는 작업들에 대해 가능한 액션들
+            if machine.queued_jobs:  # 큐에 작업이 있으면
+                print(f"    [DEBUG] {machine.name} 큐에 {len(machine.queued_jobs)}개 작업 있음")
                 for job in machine.queued_jobs:
                     current_op = job.current_op()
+                    print(f"    [DEBUG] Job {job.id}의 현재 operation: {current_op.id if current_op else 'None'}")
                     if current_op:
-                        # 현재 기계에서 실행
-                        action = Action(current_op.id, machine.name)
-                        action_key = f"{current_op.id}->{machine.name}"
-                        if action_key not in action_set:
-                            actions.append(action)
-                            action_set.add(action_key)
-                        
-                        # 다른 가능한 기계들로 전송
+                        # 해당 operation이 가능한 모든 기계에 대해 액션 생성
                         for candidate_machine in current_op.candidates:
-                            if candidate_machine != machine.name:
-                                action = Action(current_op.id, candidate_machine)
-                                action_key = f"{current_op.id}->{candidate_machine}"
-                                if action_key not in action_set:
-                                    actions.append(action)
-                                    action_set.add(action_key)
+                            action = Action(current_op.id, candidate_machine)
+                            action_key = f"{current_op.id}->{candidate_machine}"
+                            if action_key not in action_set:
+                                actions.append(action)
+                                action_set.add(action_key)
+                                print(f"    [DEBUG] 액션 추가: {action_key}")
         
+        print(f"    [DEBUG] 총 {len(actions)}개 액션 생성")
         return actions
 
     def apply(self, action):
@@ -295,13 +245,14 @@ class Simulator:
                 break
         
         if target_job and source_machine:
-            # 기존 상태 저장
+            # 기존 상태 저장 (최소한의 정보만)
+            original_queue_state = [job.save_state() for job in source_machine.queued_jobs]
             changes.append({
                 'type': 'job_transfer',
-                'job': target_job,
+                'job_id': target_job.id,
                 'from_machine': source_machine.name,
                 'to_machine': target_machine,
-                'original_queue': copy.deepcopy(source_machine.queued_jobs)
+                'original_queue_state': original_queue_state
             })
             
             # job을 source machine에서 제거
@@ -334,21 +285,46 @@ class Simulator:
         """변경사항을 되돌립니다."""
         for change in reversed(changes):
             if change['type'] == 'job_transfer':
-                job = change['job']
+                job_id = change['job_id']
                 from_machine_name = change['from_machine']
                 to_machine_name = change['to_machine']
-                original_queue = change['original_queue']
+                original_queue_state = change['original_queue_state']
                 
-                # to_machine에서 job 제거
+                # 모든 기계에서 job 찾기
+                target_job = None
                 for machine in self.machines:
-                    if machine.name == to_machine_name and job in machine.queued_jobs:
-                        machine.queued_jobs.remove(job)
+                    for job in machine.queued_jobs + machine.running_jobs + machine.finished_jobs:
+                        if job.id == job_id:
+                            target_job = job
+                            break
+                    if target_job:
+                        break
+                
+                if target_job:
+                    # to_machine에서 job 제거
+                    for machine in self.machines:
+                        if machine.name == to_machine_name and target_job in machine.queued_jobs:
+                            machine.queued_jobs.remove(target_job)
                         break
                 
                 # from_machine에 job 복원
                 for machine in self.machines:
                     if machine.name == from_machine_name:
-                        machine.queued_jobs = original_queue
+                        # 기존 큐를 비우고 상태에서 복원
+                        machine.queued_jobs = []
+                        for job_state in original_queue_state:
+                            # 모든 기계에서 해당 job 찾기
+                            found_job = None
+                            for m in self.machines:
+                                for job in m.queued_jobs + m.running_jobs + m.finished_jobs:
+                                    if job.id == job_state['job_id']:
+                                        found_job = job
+                                        break
+                                if found_job:
+                                    break
+                            if found_job:
+                                found_job.restore_state(job_state)
+                                machine.queued_jobs.append(found_job)
                         break
 
     def is_terminal(self):
@@ -461,49 +437,16 @@ class Simulator:
                 self.current_time = evt.time
                 print(f"    이벤트 처리: {evt.event_type} at {evt.time}")
                 
-                # 시뮬레이터 기반 최적화에서는 간단한 이벤트 처리
-                if evt.event_type == 'material_arrival':
-                    # Job이 기계에 도착
-                    job = evt.payload.get('job')
-                    if job:
-                        target_machine = None
-                        for machine in self.machines:
-                            if machine.name == evt.dest_model:
-                                target_machine = machine
-                                break
-                        
-                        if target_machine and job not in target_machine.queued_jobs:
-                            target_machine.queued_jobs.append(job)
-                            print(f"    Job {job.id}가 {target_machine.name}에 도착")
-                
-                elif evt.event_type == 'end_operation':
-                    # 작업 완료
-                    job = evt.payload.get('job')
-                    if job:
-                        # 작업을 완료된 기계에서 제거
-                        for machine in self.machines:
-                            if job in machine.running_jobs:
-                                machine.running_jobs.remove(job)
-                                machine.status = 'idle'
-                                print(f"    Job {job.id}가 {machine.name}에서 완료")
-                                
-                                # 다음 작업으로 진행
-                                job.advance()
-                                if not job.done():
-                                    next_op = job.current_op()
-                                    if next_op:
-                                        # 다음 작업을 적절한 기계로 전송
-                                        for target_machine in self.machines:
-                                            if target_machine.name in next_op.candidates:
-                                                transfer_evt = Event('material_arrival', {'job': job}, dest_model=target_machine.name)
-                                                self.push(transfer_evt)
-                                                transfer_evt.set_time(self.current_time + 0.1)
-                                                break
-                                else:
-                                    # 모든 작업이 완료된 경우 finished_jobs에 추가
-                                    machine.finished_jobs.append(job)
-                                    print(f"    Job {job.id}가 모든 작업 완료")
-                                break
+                # 이벤트를 해당 모델로 전달
+                if hasattr(evt, 'dest_model') and evt.dest_model:
+                    target_model = None
+                    for model in self.models:
+                        if hasattr(model, 'name') and model.name == evt.dest_model:
+                            target_model = model
+                            break
+                    
+                    if target_model:
+                        target_model.handle(evt)
             
             # 결정 시점에서 휴리스틱 적용
             if policy == "ECT":

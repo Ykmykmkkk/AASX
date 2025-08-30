@@ -6,7 +6,8 @@ from simulator.model.generator import Generator
 from simulator.model.transducer import Transducer
 
 def load(fp):
-    return json.load(open(fp))
+    with open(fp, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 class ModelBuilder:
     def __init__(self, subpath, use_dynamic_scheduling=False):
@@ -15,7 +16,7 @@ class ModelBuilder:
             self.path = subpath
         else:
             base = os.path.dirname(__file__)
-            self.path = os.path.join(subpath)
+            self.path = os.path.join(base, subpath)
         
         self.use_dynamic_scheduling = use_dynamic_scheduling
 
@@ -24,20 +25,25 @@ class ModelBuilder:
         ops_j    = load(os.path.join(self.path, 'operations.json'))
         dur_j    = load(os.path.join(self.path, 'operation_durations.json'))
         trans    = load(os.path.join(self.path, 'machine_transfer_time.json'))
-        init_m   = load(os.path.join(self.path, 'initial_machine_status.json'))
+        # machines.json이 있으면 사용, 없으면 initial_machine_status.json 사용
+        machines_file = os.path.join(self.path, 'machines.json')
+        init_machines_file = os.path.join(self.path, 'initial_machine_status.json')
+        
+        if os.path.exists(machines_file):
+            init_m = load(machines_file)
+        else:
+            init_m = load(init_machines_file)
         releases = load(os.path.join(self.path, 'job_release.json'))
 
         op_map    = {o['operation_id']: o for o in ops_j}
         
-        # 동적 스케줄링 모드에서는 routing_result.json을 무시
-        if self.use_dynamic_scheduling:
-            route_map = {}  # 빈 맵으로 초기화 (동적 할당)
-        else:
-            rout = load(os.path.join(self.path, 'routing_result.json'))
-            route_map = {r['operation_id']: r['assigned_machine'] for r in rout}
+        # 동적 라우팅 사용 (정적 라우팅 제거)
+        route_map = {}  # 빈 맵으로 초기화 (동적 할당)
 
         # release_time 매핑 생성
         release_map = {r['job_id']: r['release_time'] for r in releases}
+        
+        # 디버깅 정보 제거
         
         jobs = {}
         for j in jobs_j:
@@ -45,12 +51,8 @@ class ModelBuilder:
             for oid in j['operations']:
                 om   = op_map[oid]
                 
-                # 동적 스케줄링 모드에서는 assigned_machine을 None으로 설정
-                if self.use_dynamic_scheduling:
-                    assigned_machine = None  # 동적 할당을 위해 None으로 설정
-                else:
-                    routed = route_map[oid]
-                    assigned_machine = routed
+                # 동적 라우팅 사용 (assigned_machine을 None으로 설정)
+                assigned_machine = None  # 동적 할당을 위해 None으로 설정
                 
                 # 기본 분포 정보 (첫 번째 후보 기계 기준)
                 default_machine = om['machines'][0] if om['machines'] else None
@@ -73,6 +75,8 @@ class ModelBuilder:
             # 각 머신별 transfer map만 전달
             machine_transfer = trans.get(mname, {})
             machines.append(Machine(mname, machine_transfer, info))
+
+        # 디버깅 정보 제거
 
         gen = Generator(releases, jobs)
         tx  = Transducer()

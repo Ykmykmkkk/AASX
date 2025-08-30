@@ -1,0 +1,23 @@
+{
+  "M1": {
+    "M2": {
+      "distribution": "normal",
+      "mean": 1.0,
+      "std": 0.2
+    }
+  },
+  "M2": {
+    "M1": {
+      "distribution": "normal", 
+      "mean": 1.0,
+      "std": 0.2
+    }
+  }
+}
+
+
+
+
+
+
+
