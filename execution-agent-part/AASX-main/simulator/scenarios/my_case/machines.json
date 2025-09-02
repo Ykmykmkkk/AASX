@@ -1,0 +1,23 @@
+[
+  {
+    "machine_id": "M1",
+    "name": "Machine-1",
+    "type": "drilling",
+    "status": "idle",
+    "capacity": 1
+  },
+  {
+    "machine_id": "M2",
+    "name": "Machine-2",
+    "type": "welding",
+    "status": "idle",
+    "capacity": 1
+  },
+  {
+    "machine_id": "M3",
+    "name": "Machine-3",
+    "type": "testing",
+    "status": "idle",
+    "capacity": 1
+  }
+]

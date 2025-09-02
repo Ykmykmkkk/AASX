@@ -1,0 +1,8 @@
+# requirements.txt
+fastapi
+uvicorn[standard]
+requests
+rdflib
+pydantic
+Flask
+kubernetes

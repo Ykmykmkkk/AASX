@@ -1,0 +1,32 @@
+{
+  "M1_M2": {
+    "distribution": "uniform",
+    "low": 2.0,
+    "high": 5.0
+  },
+  "M1_M3": {
+    "distribution": "uniform",
+    "low": 2.0,
+    "high": 5.0
+  },
+  "M2_M1": {
+    "distribution": "uniform",
+    "low": 2.0,
+    "high": 5.0
+  },
+  "M2_M3": {
+    "distribution": "uniform",
+    "low": 2.0,
+    "high": 5.0
+  },
+  "M3_M1": {
+    "distribution": "uniform",
+    "low": 2.0,
+    "high": 5.0
+  },
+  "M3_M2": {
+    "distribution": "uniform",
+    "low": 2.0,
+    "high": 5.0
+  }
+}

@@ -1,0 +1,145 @@
+@prefix : <http://example.org/factory#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# ===== Classes (개념 정의) =====
+:Asset a owl:Class .
+:Machine rdfs:subClassOf :Asset .
+:Product rdfs:subClassOf :Asset .
+:Operation a owl:Class .
+:ProcessStep a owl:Class .
+:Goal a owl:Class .
+:Action a owl:Class .
+:Information a owl:Class .
+
+# --- Machine Subclasses ---
+:CNC rdfs:subClassOf :Machine .
+:HighPrecisionCNC rdfs:subClassOf :CNC .
+:Press rdfs:subClassOf :Machine .
+:WeldingRobot rdfs:subClassOf :Machine .
+:PaintingRobot rdfs:subClassOf :Machine .
+:VisionInspector rdfs:subClassOf :Machine .
+:RoboticArm rdfs:subClassOf :Machine .
+
+
+# --- Operation Subclasses ---
+:CuttingOperation rdfs:subClassOf :Operation .
+:PrecisionCuttingOperation rdfs:subClassOf :CuttingOperation .
+:PressingOperation rdfs:subClassOf :Operation .
+:WeldingOperation rdfs:subClassOf :Operation .
+:PaintingOperation rdfs:subClassOf :Operation .
+:InspectionOperation rdfs:subClassOf :Operation .
+
+# --- Information Subclasses ---
+:ProcessSpecification rdfs:subClassOf :Information .
+:MachineCapability rdfs:subClassOf :Information .
+:MachineStatus rdfs:subClassOf :Information .
+:JobLog rdfs:subClassOf :Information .
+:SensorData rdfs:subClassOf :Information .
+:TrackingData rdfs:subClassOf :Information .
+
+
+# ===== Object Properties (개념 간의 관계) =====
+:hasCapability a owl:ObjectProperty .
+:hasRealtimeStatus a owl:ObjectProperty .
+:hasProcessSpecification a owl:ObjectProperty .
+:hasSensorData a owl:ObjectProperty .
+:hasTrackingData a owl:ObjectProperty .
+
+:canPerform a owl:ObjectProperty ;
+    rdfs:domain :Machine ;
+    rdfs:range :Operation .
+
+:requiresMachineType a owl:ObjectProperty ;
+    rdfs:domain :ProcessStep ;
+    rdfs:range :Machine .
+
+:hasActionSequence a owl:ObjectProperty ;
+    rdfs:domain :Goal ;
+    rdfs:range rdf:List .
+
+:targetsSubmodelId a owl:DatatypeProperty ;
+    rdfs:domain :Action ;
+    rdfs:range xsd:string .
+
+# ===== Datatype Properties (개념과 실제 값의 연결) =====
+:hasIdShort a owl:DatatypeProperty ; rdfs:range xsd:string .
+:hasStatus a owl:DatatypeProperty ; rdfs:range xsd:string .
+:hasQueueLength a owl:DatatypeProperty ; rdfs:range xsd:integer .
+:hasEfficiency a owl:DatatypeProperty ; rdfs:range xsd:float .
+:hasExecutionType a owl:DatatypeProperty ; rdfs:range xsd:string .
+
+
+# ===== Individuals (실제 개체 선언 및 관계 정의) =====
+# --- Machines and their Capabilities ---
+:CNC-01 a :CNC ; :hasIdShort "CNC-01" ; :canPerform :CuttingOperation .
+:CNC-02 a :CNC ; :hasIdShort "CNC-02" ; :canPerform :CuttingOperation .
+:CNC-Pro-03 a :HighPrecisionCNC ; :hasIdShort "CNC-Pro-03" ; :canPerform :CuttingOperation, :PrecisionCuttingOperation .
+:Press-01 a :Press ; :hasIdShort "Press-01" ; :canPerform :PressingOperation .
+:Welder-01 a :WeldingRobot ; :hasIdShort "Welder-01" ; :canPerform :WeldingOperation .
+:Welder-02 a :WeldingRobot ; :hasIdShort "Welder-02" ; :canPerform :WeldingOperation .
+:Painter-01 a :PaintingRobot ; :hasIdShort "Painter-01" ; :canPerform :PaintingOperation .
+:Inspector-01 a :VisionInspector ; :hasIdShort "Inspector-01" ; :canPerform :InspectionOperation .
+:RobotArm-A a :RoboticArm ; :hasIdShort "RobotArm-A" .
+
+# ===== Goal & Action Definitions =====
+# Goal 1
+:query_failed_jobs_with_cooling a :Goal ;
+    :hasActionSequence ( :ActionFetchJobLog :ActionFilterData ) .
+
+# Goal 2
+:detect_anomaly_for_product a :Goal ;
+    :hasActionSequence ( :ActionFetchSensorData :ActionRunAIModel ) .
+
+# Goal 3
+:predict_first_completion_time a :Goal ;
+    :hasActionSequence (
+        :ActionFetchProductSpec
+        :ActionFetchAllMachineData
+        :ActionAssembleSimulatorInputs
+        :ActionRunProductionSimulator
+    ) .
+
+# Goal 4
+:track_product_position a :Goal ;
+    :hasActionSequence ( :ActionFetchTrackingData :ActionProcessTrackingData ) .
+
+
+# --- Action Definitions ---
+# Goal 1 Actions
+:ActionFetchJobLog a :Action ;
+    :hasExecutionType "aas_query" ;
+    :targetsSubmodelId "urn:factory:submodel:job_log" .
+
+:ActionFilterData a :Action ;
+    :hasExecutionType "data_filtering" .
+
+# Goal 2 Actions
+:ActionFetchSensorData a :Action ;
+    :hasExecutionType "aas_query" . # 특정 대상을 지정하지 않음
+
+:ActionRunAIModel a :Action ;
+    :hasExecutionType "ai_model_inference" .
+
+# Goal 3 Actions
+:ActionFetchProductSpec a :Action ;
+    :hasExecutionType "aas_query" ;
+    :targetsSubmodelId "urn:factory:submodel:process_specification:all" .
+
+:ActionFetchAllMachineData a :Action ;
+    :hasExecutionType "aas_query_multiple" .
+
+:ActionAssembleSimulatorInputs a :Action ;
+    :hasExecutionType "internal_processing" .
+
+:ActionRunProductionSimulator a :Action ;
+    :hasExecutionType "docker_run" .
+
+# Goal 4 Actions
+:ActionFetchTrackingData a :Action ;
+    :hasExecutionType "aas_query" . # 특정 대상을 지정하지 않음
+
+:ActionProcessTrackingData a :Action ;
+    :hasExecutionType "data_filtering" .

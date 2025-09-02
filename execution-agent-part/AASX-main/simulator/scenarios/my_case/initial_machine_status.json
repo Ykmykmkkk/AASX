@@ -1,0 +1,17 @@
+{
+  "M1": {
+    "status": "idle",
+    "queue_length": 0,
+    "current_job": null
+  },
+  "M2": {
+    "status": "idle",
+    "queue_length": 0,
+    "current_job": null
+  },
+  "M3": {
+    "status": "idle",
+    "queue_length": 0,
+    "current_job": null
+  }
+}

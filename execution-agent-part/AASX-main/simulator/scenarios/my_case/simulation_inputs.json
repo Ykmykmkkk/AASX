@@ -1,0 +1,119 @@
+{
+  "process_spec": {
+    "id": "urn:factory:submodel:process_specification:all",
+    "idShort": "ProcessSpecification",
+    "submodelElements": [
+      {
+        "idShort": "P-1001",
+        "modelType": "Property",
+        "value": {
+          "process_steps": [
+            {
+              "operation": "cutting",
+              "required_machine_type": "CNC",
+              "std_duration_min": 12,
+              "step": 1
+            },
+            {
+              "operation": "welding",
+              "required_machine_type": "WeldingRobot",
+              "std_duration_min": 8,
+              "step": 2
+            }
+          ]
+        }
+      },
+      {
+        "idShort": "P-2001",
+        "modelType": "Property",
+        "value": {
+          "process_steps": [
+            {
+              "operation": "cutting",
+              "required_machine_type": "CNC",
+              "std_duration_min": 15,
+              "step": 1
+            },
+            {
+              "operation": "pressing",
+              "required_machine_type": "Press",
+              "std_duration_min": 5,
+              "step": 2
+            },
+            {
+              "operation": "welding",
+              "required_machine_type": "WeldingRobot",
+              "std_duration_min": 10,
+              "step": 3
+            },
+            {
+              "operation": "painting",
+              "required_machine_type": "PaintingRobot",
+              "std_duration_min": 18,
+              "step": 4
+            }
+          ]
+        }
+      },
+      {
+        "idShort": "P-3001",
+        "modelType": "Property",
+        "value": {
+          "process_steps": [
+            {
+              "operation": "precision_cutting",
+              "required_machine_type": "HighPrecisionCNC",
+              "std_duration_min": 25,
+              "step": 1
+            },
+            {
+              "operation": "welding",
+              "required_machine_type": "WeldingRobot",
+              "std_duration_min": 10,
+              "step": 2
+            },
+            {
+              "operation": "painting",
+              "required_machine_type": "PaintingRobot",
+              "std_duration_min": 15,
+              "step": 3
+            },
+            {
+              "operation": "inspection",
+              "required_machine_type": "VisionInspector",
+              "std_duration_min": 5,
+              "step": 4
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "machine_data": {
+    "id": "urn:factory:submodel:capability:cnc-01",
+    "idShort": "Capability_CNC-01",
+    "submodelElements": [
+      {
+        "idShort": "Capability",
+        "modelType": "Property",
+        "value": {
+          "efficiency": 0.95,
+          "machine_type": "CNC",
+          "performable_operations": [
+            "cutting"
+          ]
+        }
+      }
+    ]
+  },
+  "order": {
+    "goal": "predict_first_completion_time",
+    "product_id": "Product-A",
+    "quantity": 10,
+    "date_range": {
+      "start": "2025-08-11",
+      "end": "2025-08-15"
+    }
+  },
+  "job_id": "6fb8f719-4f09-45d7-ad7a-d17352cc7a33"
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "operation_id": "O11",
+    "job_id": "J1",
+    "assigned_machine": "M1",
+    "start_time": 0.0,
+    "estimated_end_time": 3.356157316918455,
+    "priority_score": 3
+  },
+  {
+    "operation_id": "O12",
+    "job_id": "J1",
+    "assigned_machine": "M2",
+    "start_time": 0.0,
+    "estimated_end_time": 3.629843181980292,
+    "priority_score": 3
+  },
+  {
+    "operation_id": "O13",
+    "job_id": "J1",
+    "assigned_machine": "M1",
+    "start_time": 3.356157316918455,
+    "estimated_end_time": 10.58432040261819,
+    "priority_score": 3
+  },
+  {
+    "operation_id": "O21",
+    "job_id": "J2",
+    "assigned_machine": "M1",
+    "start_time": 10.58432040261819,
+    "estimated_end_time": 13.310464581521943,
+    "priority_score": 2
+  },
+  {
+    "operation_id": "O22",
+    "job_id": "J2",
+    "assigned_machine": "M2",
+    "start_time": 3.629843181980292,
+    "estimated_end_time": 7.590358086825898,
+    "priority_score": 2
+  },
+  {
+    "operation_id": "O31",
+    "job_id": "J3",
+    "assigned_machine": "M3",
+    "start_time": 0.0,
+    "estimated_end_time": 0.8254562245221422,
+    "priority_score": 1
+  },
+  {
+    "operation_id": "O32",
+    "job_id": "J3",
+    "assigned_machine": "M1",
+    "start_time": 13.310464581521943,
+    "estimated_end_time": 16.326783823608167,
+    "priority_score": 1
+  }
+]
