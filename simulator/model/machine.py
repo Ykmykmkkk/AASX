@@ -245,6 +245,13 @@ class Machine(EoModel):
         part = self.running
         current_time = EoModel.get_time()
         
+        # 🚨 Operation 완료 시간 기록 강화
+        current_op = part.job.current_op()
+        if current_op:
+            # 이전 operation의 완료 시간 기록
+            current_op.end_time = current_time
+            print(f"[{self.name}] Operation {current_op.id} 완료 시간 기록: {current_time:.3f}")
+        
         # Job 완료 시간 업데이트
         part.job.set_completion_time(current_time)
         
@@ -314,7 +321,9 @@ class Machine(EoModel):
             elif dist=='exponential':
                 delay = random.expovariate(spec['rate'])
             else:
-                delay = 0
+                # 🚨 기본 전송 시간 설정으로 겹치는 문제 방지
+                delay = 1.0  # 최소 1초 전송 시간 보장
+                print(f"[{self.name}] {nxt}로의 전송 시간이 정의되지 않음 - 기본값 {delay}초 사용")
 
             # Job 상태를 TRANSFER로 설정
             part.job.set_status(JobStatus.TRANSFER)

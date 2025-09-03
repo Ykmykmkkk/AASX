@@ -4,6 +4,11 @@
       "distribution": "normal",
       "mean": 1.0,
       "std": 0.2
+    },
+    "M3": {
+      "distribution": "normal",
+      "mean": 1.5,
+      "std": 0.3
     }
   },
   "M2": {
@@ -11,6 +16,23 @@
       "distribution": "normal", 
       "mean": 1.0,
       "std": 0.2
+    },
+    "M3": {
+      "distribution": "normal",
+      "mean": 1.2,
+      "std": 0.25
+    }
+  },
+  "M3": {
+    "M1": {
+      "distribution": "normal",
+      "mean": 1.5,
+      "std": 0.3
+    },
+    "M2": {
+      "distribution": "normal",
+      "mean": 1.2,
+      "std": 0.25
     }
   }
 }

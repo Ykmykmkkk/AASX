@@ -606,3 +606,30 @@ class Simulator:
             if not m:
                 raise KeyError(f"No model: {evt.dest_model}")
             m.handle_event(evt)
+
+    def validate_mathematical_constraints(self):
+        """수학적 검증식을 검증합니다."""
+        violations = []
+        
+        # 1) 공정(머신) 쪽 기본 검증
+        violations.extend(self._validate_machine_constraints())
+        
+        return violations
+
+    def print_constraint_violations(self):
+        """제약 조건 위반 사항을 출력합니다."""
+        violations = self.validate_mathematical_constraints()
+        
+        if not violations:
+            print("✅ 모든 수학적 제약 조건을 만족합니다!")
+            return
+        
+        print(f"\n❌ {len(violations)}개의 제약 조건 위반이 발견되었습니다:")
+        print("=" * 80)
+        
+        for i, violation in enumerate(violations, 1):
+            print(f"{i}. {violation['type']}")
+            for key, value in violation.items():
+                if key != 'type':
+                    print(f"   {key}: {value}")
+            print()
