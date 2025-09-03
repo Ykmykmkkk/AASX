@@ -252,3 +252,23 @@ if __name__ == '__main__':
     print(f"- results/simulator_optimization_result.json: 최적화 결과")
     print(f"- 시뮬레이터 기반 최적화 스케줄링 완료")
     print("="*60)
+
+    print(f"\n=== 결과 파일 생성 완료 ===")
+    print(f"- results/simulator_optimization_result.json: 최적화 결과")
+    print(f"- results/trace.xlsx: 시뮬레이션 추적 로그 (Excel)")
+    
+    # AGV 로그 저장
+    print(f"\n=== AGV 로그 저장 중 ===")
+    agv_files_saved = []
+    for machine in machines:
+        if hasattr(machine, 'save_agv_logs'):
+            agv_log_file = machine.save_agv_logs('results')
+            if agv_log_file:
+                agv_files_saved.append(agv_log_file)
+    
+    if agv_files_saved:
+        print(f"=== AGV 로그 파일 생성 완료 ===")
+        for file_path in agv_files_saved:
+            print(f"- {file_path}")
+    else:
+        print("AGV 로그가 없거나 저장에 실패했습니다.")

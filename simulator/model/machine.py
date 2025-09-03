@@ -48,6 +48,41 @@ class Machine(EoModel):
         # 무한 루프 방지를 위한 전송 횟수 추적
         self.transfer_counts = {}  # {job_id: transfer_count}
         self.max_transfers = 1  # 최대 전송 횟수 (1번 전송 후 현재 기계에서 실행)
+        
+        # 간단한 AGV 로깅 시스템
+        self.agv_logs = []  # AGV 활동 로그
+        
+    def log_agv_activity(self, activity_type, job_id, destination=None, duration=0.0):
+        """AGV 활동 로깅"""
+        log_entry = {
+            'timestamp': EoModel.get_time(),
+            'machine': self.name,
+            'activity_type': activity_type,  # 'delivery_start', 'delivery_complete', 'return'
+            'job_id': job_id,
+            'destination': destination,
+            'duration': duration
+        }
+        self.agv_logs.append(log_entry)
+        print(f"[AGV {self.name}] {activity_type}: Job {job_id} → {destination} (시간: {duration:.2f}초)")
+        
+    def save_agv_logs(self, output_dir='results'):
+        """AGV 로그를 엑셀 파일로 저장"""
+        if not self.agv_logs:
+            return None
+            
+        import pandas as pd
+        import os
+        
+        os.makedirs(output_dir, exist_ok=True)
+        
+        df = pd.DataFrame(self.agv_logs)
+        filename = f'agv_logs_{self.name}.xlsx'
+        filepath = os.path.join(output_dir, filename)
+        
+        df.to_excel(filepath, index=False)
+        print(f"[AGV 로그] {filepath} 저장 완료 ({len(self.agv_logs)}개 로그)")
+        
+        return filepath
 
     def handle_event(self, evt):
         et = evt.event_type
@@ -61,6 +96,12 @@ class Machine(EoModel):
         elif et in ('end_operation','operation_complete'):
             op_id = evt.payload.get('operation_id')
             self._finish(op_id)
+            
+        elif et == 'agv_delivery_complete':
+            # AGV 배송 완료 및 복귀 처리
+            payload = evt.payload
+            self.log_agv_activity('delivery_complete', payload['job_id'], payload['destination'], payload['delivery_time'])
+            self.log_agv_activity('return_home', payload['job_id'], self.name, payload['return_time'])
 
     def _enqueue(self, part):
         self.queue.append(part)
@@ -294,10 +335,25 @@ class Machine(EoModel):
             #     }
             #     self.control_tower.update_job_status(part.job.id, job_status)
 
+            # AGV 배송 시작 로깅
+            self.log_agv_activity('delivery_start', part.job.id, nxt, delay)
+            
             Recorder.log_transfer(part, self.name, nxt, EoModel.get_time(), delay)
 
             ev = Event('part_arrival', {'part': part}, dest_model=nxt)
             self.schedule(ev, delay)
+            
+            # AGV 복귀 시간 계산 (배송 시간과 동일하다고 가정)
+            return_delay = delay
+            
+            # AGV 배송 완료 및 복귀 로깅을 위한 이벤트 스케줄링
+            agv_return_ev = Event('agv_delivery_complete', {
+                'job_id': part.job.id,
+                'destination': nxt,
+                'delivery_time': delay,
+                'return_time': return_delay
+            }, dest_model=self.name)
+            self.schedule(agv_return_ev, delay + return_delay)
         
         self.running = None
         self.status = 'idle'

@@ -76,7 +76,14 @@ class ModelBuilder:
             machine_transfer = trans.get(mname, {})
             machines.append(Machine(mname, machine_transfer, info))
 
-        # 디버깅 정보 제거
+        # AGV 로거 생성 (머신별 AGV에 설정)
+        from simulator.control.agv_logger import AGVLogger
+        agv_logger = AGVLogger()
+        
+        # 모든 머신의 AGV에 로거 설정
+        for machine in machines:
+            if hasattr(machine, 'set_logger'):
+                machine.set_logger(agv_logger)
 
         gen = Generator(releases, jobs)
         tx  = Transducer()
